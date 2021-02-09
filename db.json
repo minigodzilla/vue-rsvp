@@ -5,9 +5,9 @@
       "email": "wendy@hotmail.com",
       "guest1FirstName": "Wendy",
       "guest1LastName": "Young",
-      "guest1Meal": "chicken",
+      "guest1Meal": "",
       "guest1DietaryNotes": "",
-      "guest1AlcoholPref": "wine"
+      "guest1AlcoholPref": ""
     },
     {
       "id": "2",
@@ -15,8 +15,8 @@
       "guest1FirstName": "Margaret",
       "guest1LastName": "Diabo",
       "guest1Meal": "chicken",
-      "guest1DietaryNotes": "Tet a asmmadv",
-      "guest1AlcoholPref": "none"
+      "guest1DietaryNotes": "Lactose intolerant",
+      "guest1AlcoholPref": ""
     },
     {
       "id": "3",
