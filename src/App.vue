@@ -1,4 +1,5 @@
 <template>
+  <div class="vignette"></div>
   <h1>Jenn and Steve's Wedding RSVP</h1>
   <GuestManager/>
 </template>
@@ -31,11 +32,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url('assets/bg.jpg');
+  background-image: url('/assets/bg.jpg');
   background-position: 50% 50%;
   background-size: cover;
   font-family: 'Cormorant Garamond',serif;
   font-size: 1.5vw;
+}
+
+.svg-defs {
+  display: none;
 }
 
 .vignette {
@@ -49,6 +54,10 @@ body {
   background-image: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
   mix-blend-mode: soft-light;
   opacity: 0.75;
+}
+
+h1 {
+  display: none;
 }
 
 </style>

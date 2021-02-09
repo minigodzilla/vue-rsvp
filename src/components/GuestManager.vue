@@ -1,72 +1,82 @@
 <template>
-
-  <div class="step step-1" v-if="step === 1">
-
-    <h4>Please enter your invitation code to continue.</h4>
-
-    <input type="text" id="id"/><br/><br/>
-
-    <button v-on:click="lookupGuest">Continue</button>
-
-    <div class="error-message">{{ errorMessage }}</div>
-
-  </div>
-
-  <div class="step step-2" v-if="step === 2">
-
-    <p>Hello <b>{{ guest.guest1FirstName }}</b>!</p>
-
-    <p>Is this your email?</p>
-
-    <input type="text" v-model="guest.email"/><br/><br/>
-
-    <button v-on:click="modifyGuest">Continue</button>
-  </div>
-
-  <div class="step step-3" v-if="step === 3">
-
-    <h4>Please check your meal preference.</h4>
-
-    <div class="input-row">
-      <input type="radio" name="meal" value="veg" id="meal-veg" v-model="guest.guest1Meal"/>
-      <label for="meal-veg">Vegetable</label>
-      <input type="radio" name="meal" value="beef" id="meal-beef" v-model="guest.guest1Meal"/>
-      <label for="meal-beef">Beef</label>
-      <input type="radio" name="meal" value="chicken" id="meal-chicken" v-model="guest.guest1Meal"/>
-      <label for="meal-chicken">Chicken</label>
+  <div class="book" :class="['show-' + step]">
+    <div class="spread spread-1" data-spread="1">
+      <div class="page left">
+        <img draggable="false" class="img img-full" src="/assets/botany-1.jpg"/>
+      </div>
+      <div class="page right">
+        <h4>Please enter your invitation code to continue.</h4>
+        <input class="input box" ref="id" type="text" id="id" v-model="guest.id" v-on:keyup.enter="lookupGuest"/>
+        <button v-on:click="lookupGuest">
+          <img draggable="false" class="img img-small" src="/assets/telephone.jpg"/>
+        </button>
+        <div class="error-message">{{ errorMessage }}</div>
+      </div>
     </div>
-
-    <h4>Any dietary notes? (allergies, restrictions, etc.?)</h4>
-
-    <div class="input-row">
-      <textarea spellcheck="false" v-model="guest.guest1DietaryNotes"></textarea>
+    <div class="spread spread-2" data-spread="2">
+      <div class="page left" v-on:click="prev">
+        <img draggable="false" class="img img-full" src="/assets/beatrix-1.jpg"/>
+      </div>
+      <div class="page right">
+        <div class="body-text">
+          <h4>Hello {{ guest.guest1FirstName }}!<br/>
+          Please check your meal preference.</h4>
+          <div class="input-row">
+            <input type="radio" name="meal" value="veg" id="meal-veg" v-model="guest.guest1Meal" ref="meal"/>
+            <label for="meal-veg">Vegetable</label>
+            <input type="radio" name="meal" value="beef" id="meal-beef" v-model="guest.guest1Meal"/>
+            <label for="meal-beef">Beef</label>
+            <input type="radio" name="meal" value="chicken" id="meal-chicken" v-model="guest.guest1Meal"/>
+            <label for="meal-chicken">Chicken</label>
+          </div>
+        </div>
+        <div class="body-text" :class="{'hidden' : (guest.guest1Meal === ''), 'shown' : (guest.guest1Meal != '')}">
+          <h4>Any dietary notes? (allergies, restrictions, etc.?)</h4>
+          <div class="input-row">
+            <textarea spellcheck="false" v-model="guest.guest1DietaryNotes"></textarea>
+          </div>
+        </div>
+        <button class="page-turn" v-show="guest.guest1Meal !== ''" v-on:click="next('alcohol-none')">
+          <img draggable="false" src="/assets/page-turn.svg"/>
+        </button>
+        <div class="page-turn-tip">Turn the page to continue.</div>
+      </div>
     </div>
-
-    <button v-on:click="modifyGuest">Continue</button>
-  </div>
-
-  <div class="step step-4" v-if="step === 4">
-
-    <h4>Please check your alcohol preference.</h4>
-    <div class="input-row">
-      <input type="radio" name="alcohol" value="none" id="alcohol-none" v-model="guest.guest1AlcoholPref"/>
-      <label for="alcohol-none">None</label>
-      <input type="radio" name="alcohol" value="beer" id="alcohol-beer" v-model="guest.guest1AlcoholPref"/>
-      <label for="alcohol-beer">Beer</label>
-      <input type="radio" name="alcohol" value="wine" id="alcohol-wine" v-model="guest.guest1AlcoholPref"/>
-      <label for="alcohol-wine">Wine</label>
+    <div class="spread spread-3" data-spread="3">
+      <div class="page left" v-on:click="prev">
+        <img draggable="false" class="img img-full" src="/assets/pooh-1.jpg"/>
+      </div>
+      <div class="page right">
+        <div class="body-text">
+          <h4>Please check your alcohol preference.</h4>
+          <div class="input-row">
+            <input type="radio" name="alcohol" value="none" id="alcohol-none" v-model="guest.guest1AlcoholPref" ref="alcohol"/>
+            <label for="alcohol-none">None</label>
+            <input type="radio" name="alcohol" value="beer" id="alcohol-beer" v-model="guest.guest1AlcoholPref"/>
+            <label for="alcohol-beer">Beer</label>
+            <input type="radio" name="alcohol" value="wine" id="alcohol-wine" v-model="guest.guest1AlcoholPref"/>
+            <label for="alcohol-wine">Wine</label>
+          </div>
+        </div>
+        <button class="page-turn" v-show="guest.guest1AlcoholPref !== ''" v-on:click="modifyGuest">
+          <img draggable="false" src="/assets/page-turn.svg"/>
+        </button>
+      </div>
     </div>
-
-    <button v-on:click="modifyGuest">Continue</button>
+    <div class="spread spread-4" data-spread="4">
+      <div class="page left" v-on:click="prev">
+        <img draggable="false" class="img img-full" src="/assets/birds.jpg"/>
+      </div>
+      <div class="page right">
+        <div class="body-text">
+          <h3>Thank you!</h3>
+          <p>We have your RSVP.</p>
+          <p>You may return at any time to make changes.</p>
+          <p>We can't wait to see you!</p>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div class="step step-5" v-if="step === 5">
-
-    <h3>Thank you!</h3>
-
-    <button v-on:click="reset">Let's do it all over again</button>
-  </div>
-
 </template>
 
 <script>
@@ -79,17 +89,25 @@ export default {
   data() {
     return this.initialState();
   },
+  mounted() {
+    this.focusInput('id');
+  },
   methods: {
-    prev() {
-      this.step--;
+    focusInput(i) {
+      this.$refs[i].focus();
     },
-    next() {
+    prev(i) {
+      this.step--;
+      this.focusInput(i);
+    },
+    next(i) {
       this.step++;
+      this.focusInput(i);
     },
     initialState() {
       return {
         step: 1,
-        errorMessage: null,
+        errorMessage: '',
         guest: []
       }
     },
@@ -101,18 +119,13 @@ export default {
       const guestID = document.getElementById('id').value;
 
       if (guestID) {
-        console.log('Guest ID: ' + guestID);
-
         axios.get(`${baseURL}${guestID}`)
           .then(response => {
             this.guest = response.data;
-            console.log('success');
-            console.log(response);
-            this.next();
+            this.next('meal');
           })
           .catch(error => {
-            //console.log(error);
-            this.errorMessage = 'Something went wrong. (' + error + ')';
+            this.errorMessage = error.message;
           });
       }
       else
@@ -125,8 +138,6 @@ export default {
 
       axios.put(`${baseURL}${this.guest.id}`, this.guest)
         .then(response => {
-          console.log('success');
-          console.log(response);
           this.next();
         })
         .catch(error => {
@@ -206,14 +217,22 @@ export default {
 
       > div,
       > img,
-      > input {
+      > input,
+      > button {
         mix-blend-mode: multiply;
+      }
+
+      button {
+        width: 25%;
+        padding: 0;
+        border: 0 none;
+        background: transparent;
       }
 
       .img-small {
         display: block;
         margin: 0 auto;
-        width: 25%;
+        width: 100%;
         transform: translateX(-0.25vw);
       }
 
@@ -231,7 +250,6 @@ export default {
       .body-text {
         max-width: 35vw;
         text-align: center;
-        overflow: hidden;
         margin-bottom: 1em;
 
         h4 {
@@ -252,6 +270,13 @@ export default {
         }
       }
 
+      .error-message {
+        color: #f00;
+        height: 1em;
+        margin-top: 1em;
+        font-size: 0.875em;
+      }
+
       .input {
         appearance: none;
         font-size: 2em;
@@ -263,7 +288,6 @@ export default {
         color: #333;
         margin: 1.5em 0;
         padding: 0;
-        outline: none;
         width: 4em;
         text-align: center;
       }
@@ -284,32 +308,7 @@ export default {
         line-height: 2em;
         color: #26f;
         text-align: center;
-
-        &,
-        &:focus {
-          outline: none;
-        }
-      }
-
-      button {
-        appearance: none;
-        border: 0 none;
-        border-radius: 0;
-        font-family: "cormorant Garamond",serif;
-        font-size: 1em;
-        font-weight: 400;
-        outline: none;
-        margin-top: 1em;
-        padding: .5em 1em;
-        background-color: #eee;
-
-        &:active {
-          background-color: #ccc;
-        }
-      }
-
-      .input-row {
-        //margin-bottom: 3em;
+        overflow: hidden;
       }
 
       label {
@@ -330,6 +329,7 @@ export default {
       }
 
       .page-turn {
+        outline: none;
         cursor: pointer;
         position: absolute;
         width: 70%;
@@ -344,11 +344,12 @@ export default {
         animation-iteration-count: 1, infinite;
         animation-timing-function: ease, linear;
 
-        svg {
+        img {
           display: block;
+          width: 100%;
         }
 
-        &.shown {
+        & {
           animation-name: pageturn-reveal, pageturn-breathe; 
         }
       }
@@ -377,7 +378,7 @@ export default {
         animation-timing-function: ease, linear;
       }
 
-      .page-turn.shown ~ .page-turn-tip {
+      .page-turn[style=""] ~ .page-turn-tip {
         animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
       }
     }
