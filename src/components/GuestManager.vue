@@ -20,7 +20,7 @@
 
     <input type="text" v-model="guest.email"/><br/><br/>
 
-    <button v-on:click="modifyGuest">Continue</button>
+    <button v-on:click="next">Continue</button>
   </div>
 
   <div class="step step-3" v-if="step === 3">
@@ -42,7 +42,7 @@
       <textarea spellcheck="false" v-model="guest.guest1DietaryNotes"></textarea>
     </div>
 
-    <button v-on:click="modifyGuest">Continue</button>
+    <button v-on:click="next">Continue</button>
   </div>
 
   <div class="step step-4" v-if="step === 4">
