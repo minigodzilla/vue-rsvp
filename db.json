@@ -5,7 +5,7 @@
       "email": "wendy@hotmail.com",
       "guest1FirstName": "Wendy",
       "guest1LastName": "Young",
-      "guest1Meal": "Beef",
+      "guest1Meal": "veg",
       "guest1DietaryNotes": "",
       "guest1AlcoholPref": ""
     },
@@ -14,8 +14,8 @@
       "email": "mm.diabo@gmail.com",
       "guest1FirstName": "Margaret",
       "guest1LastName": "Diabo",
-      "guest1Meal": "Veg",
-      "guest1DietaryNotes": "veggies",
+      "guest1Meal": "chicken",
+      "guest1DietaryNotes": "",
       "guest1AlcoholPref": ""
     },
     {
@@ -23,9 +23,9 @@
       "email": "samgorkav@gmail.com",
       "guest1FirstName": "Sam",
       "guest1LastName": "Kavanagh",
-      "guest1Meal": "All the beans",
+      "guest1Meal": "chicken",
       "guest1DietaryNotes": "No tomatoes",
-      "guest1AlcoholPref": "Wine"
+      "guest1AlcoholPref": "wine"
     }
   ]
 }
