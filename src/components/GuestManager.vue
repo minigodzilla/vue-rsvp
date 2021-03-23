@@ -39,14 +39,14 @@
             <textarea spellcheck="false" v-model="guest.guest1DietaryNotes"></textarea>
           </div>
         </div>
-        <button class="page-turn" v-on:click="next('alcohol-none')">
+        <button class="page-turn" v-on:click="next('alcohol')">
           <img draggable="false" src="/assets/page-turn.svg"/>
         </button>
-        <div class="page-turn-tip" v-on:click="next('alcohol-none')">Turn the page to continue.</div>
+        <div class="page-turn-tip" v-on:click="next('alcohol')">Turn the page to continue.</div>
       </div>
     </div>
     <div class="spread spread-alcohol spread-3" :class="{'active' : (step == 3), 'complete' : (guest.hasOwnProperty('guest1AlcoholPref') && guest.guest1AlcoholPref != ''), 'passed' : (step > 3)}">
-      <div class="page left" v-on:click="prev">
+      <div class="page left" v-on:click="prev('meal')">
         <img draggable="false" class="img img-full" src="/assets/pooh-1.jpg"/>
       </div>
       <div class="page right">
@@ -339,7 +339,9 @@ export default {
       }
 
       input[type=radio] {
-        display: none;
+        width: 0;
+        height: 0;
+        margin: 0;
       }
 
       label {
@@ -391,9 +393,12 @@ export default {
       }
 
       input:focus,
-      textarea:focus {
+      textarea:focus,
+      button:focus,
+      input[type=radio]:focus + label {
         outline:none !important;
         box-shadow:none !important;
+        background-color: red;
       }
 
       textarea {
@@ -438,11 +443,6 @@ export default {
         transition-duration: 2s;
         transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
         transition-delay: 0s;
-
-        &,
-        &:focus {
-          outline: none;
-        }
 
         img {
           display: block;
