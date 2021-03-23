@@ -1,19 +1,22 @@
 <template>
-  <div class="book" :class="['show-' + step]">
-    <div class="spread spread-1" data-spread="1">
+  <div class="book">
+    <div class="spread spread-login spread-1" :class="{'active' : (step == 1), 'passed' : (step > 1)}">
       <div class="page left">
-        <img draggable="false" class="img img-full" src="/assets/botany-1.jpg"/>
+        <!-- <img draggable="false" class="img img-full" src="/assets/botany-1.jpg"/> -->
       </div>
       <div class="page right">
-        <h4>Please enter your invitation code to continue.</h4>
-        <input class="input box" ref="id" type="text" id="id" v-model="guest.id" v-on:keyup.enter="lookupGuest"/>
+        <img draggable="false" class="img img-small img-flourish" src="/assets/flourish-1.jpg"/>
+        <div class="body-text">
+          <h4>Please enter your invitation code to continue.</h4>
+        </div>
+        <input class="input box" ref="id" type="text" inputmode="tel" id="id" v-model="guest.id" v-on:keyup.enter="lookupGuest"/>
         <button v-on:click="lookupGuest">
           <img draggable="false" class="img img-small" src="/assets/telephone.jpg"/>
         </button>
         <div class="error-message">{{ errorMessage }}</div>
       </div>
     </div>
-    <div class="spread spread-2" data-spread="2">
+    <div class="spread spread-meal spread-2" :class="{'active' : (step == 2), 'complete' : (guest.hasOwnProperty('guest1Meal') && guest.guest1Meal != ''), 'passed' : (step > 2)}">
       <div class="page left" v-on:click="prev">
         <img draggable="false" class="img img-full" src="/assets/beatrix-1.jpg"/>
       </div>
@@ -36,19 +39,19 @@
             <textarea spellcheck="false" v-model="guest.guest1DietaryNotes"></textarea>
           </div>
         </div>
-        <button class="page-turn" v-show="guest.guest1Meal !== ''" v-on:click="next('alcohol-none')">
+        <button class="page-turn" v-on:click="next('alcohol-none')">
           <img draggable="false" src="/assets/page-turn.svg"/>
         </button>
-        <div class="page-turn-tip">Turn the page to continue.</div>
+        <div class="page-turn-tip" v-on:click="next('alcohol-none')">Turn the page to continue.</div>
       </div>
     </div>
-    <div class="spread spread-3" data-spread="3">
+    <div class="spread spread-alcohol spread-3" :class="{'active' : (step == 3), 'complete' : (guest.hasOwnProperty('guest1AlcoholPref') && guest.guest1AlcoholPref != ''), 'passed' : (step > 3)}">
       <div class="page left" v-on:click="prev">
         <img draggable="false" class="img img-full" src="/assets/pooh-1.jpg"/>
       </div>
       <div class="page right">
         <div class="body-text">
-          <h4>Please check your alcohol preference.</h4>
+          <h4>Please tell us your preference for alcoholic drinks.</h4>
           <div class="input-row">
             <input type="radio" name="alcohol" value="none" id="alcohol-none" v-model="guest.guest1AlcoholPref" ref="alcohol"/>
             <label for="alcohol-none">None</label>
@@ -58,22 +61,25 @@
             <label for="alcohol-wine">Wine</label>
           </div>
         </div>
-        <button class="page-turn" v-show="guest.guest1AlcoholPref !== ''" v-on:click="modifyGuest">
+        <button class="page-turn" v-on:click="modifyGuest">
           <img draggable="false" src="/assets/page-turn.svg"/>
         </button>
+        <div class="page-turn-tip" v-on:click="modifyGuest">Turn the page to continue.</div>
       </div>
     </div>
-    <div class="spread spread-4" data-spread="4">
+    <div class="spread spread-thank-you spread-4" :class="{'active' : (step == 4)}">
       <div class="page left" v-on:click="prev">
         <img draggable="false" class="img img-full" src="/assets/birds.jpg"/>
       </div>
       <div class="page right">
+        <img draggable="false" class="img img-small img-flourish" src="/assets/flourish-1.jpg"/>
         <div class="body-text">
           <h3>Thank you!</h3>
           <p>We have your RSVP.</p>
           <p>You may return at any time to make changes.</p>
           <p>We can't wait to see you!</p>
         </div>
+        <img draggable="false" class="img img-small img-flourish" src="/assets/flourish-2.jpg"/>
       </div>
     </div>
   </div>
@@ -83,13 +89,15 @@
 import axios from "axios";
 
 const baseURL = 
-  process.env.NODE_ENV === 'development' ? 'http://localhost:3000/guests/' : 'guests/'
+  process.env.NODE_ENV === 'development' ? '//localhost:3000/guests/' : 'guests/'
+//  process.env.NODE_ENV === 'development' ? 'https://jennandsteve.ca/guests/' : 'guests/'
 
 export default {
   data() {
     return this.initialState();
   },
   mounted() {
+    this.initialCamera();
     this.focusInput('id');
   },
   methods: {
@@ -102,6 +110,7 @@ export default {
     },
     next(i) {
       this.step++;
+      this.cameraPan();
       this.focusInput(i);
     },
     initialState() {
@@ -143,6 +152,32 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+    cameraPan() {
+
+      const app = document.getElementById('app');
+
+      app.classList.remove('pan','right');
+      app.classList.add('zoom-out');
+
+      setTimeout(function() {
+        app.classList.remove('zoom-out');
+        app.classList.add('pan','left');
+      }, 2500);
+ 
+      setTimeout(function() {
+        app.classList.remove('left');
+        app.classList.add('right');
+      }, 5000);
+    },
+    initialCamera() {
+
+      const app = document.getElementById('app');
+
+      setTimeout(function() {
+        app.classList.add('pan','right');
+      }, 2500);
+
     }
   }
 };
@@ -179,8 +214,7 @@ export default {
     right: 1vw;
     bottom: 1vw;
     left: 1vw;
-    transition: z-index 1s linear;
-
+    transition: z-index 2s cubic-bezier(0.645, 0.045, 0.355, 1);
 
     .page {
       backface-visibility: hidden;
@@ -193,9 +227,12 @@ export default {
       align-items: center;
       justify-content: center;
       transform: rotateY(0deg);
-      transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1), filter 1s cubic-bezier(0.645, 0.045, 0.355, 1);
       transform-origin: 0% 0%;
       filter: brightness(0.9) contrast(1.1);
+      transition-property: transform, filter, clip-path;
+      transition-delay: 0s;
+      transition-duration: 2s;
+      transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
 
       &.left {
         left: 0;
@@ -208,6 +245,7 @@ export default {
       &.right {
         right: 0;
         background-image: linear-gradient(to right, #a89373 0%, #c1aa87 1%, #c0a885 12.5%, #a28c6c 50%, #a58e6e 100%);
+        clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 100% 100%, 0% 100%);
       }
 
       > div,
@@ -233,7 +271,11 @@ export default {
         display: block;
         margin: 0 auto;
         width: 100%;
-        transform: translateX(-0.25vw);
+      }
+
+      .img-flourish {
+        width: 30%;
+        margin: 1em 0;
       }
 
       .img-full {
@@ -243,14 +285,14 @@ export default {
 
       @keyframes reveal-form-field {
         0%    { height: 0;    opacity: 0; }
-        50%   { height: 8.25em; opacity: 0; }
-        100%  { height: 8.25em; opacity: 1; }
+        50%   { height: 12em; opacity: 0; }
+        100%  { height: 12em; opacity: 1; }
       }
 
       .body-text {
         max-width: 35vw;
         text-align: center;
-        margin-bottom: 1em;
+        margin: 1em 0;
 
         h4 {
           margin-top: 1em;
@@ -283,13 +325,75 @@ export default {
         font-family: serif;
         border-radius: 0;
         border-style: solid;
-        border-width: 2px;
+        border-width: 0.05em;
         border-color: #888;
         color: #333;
         margin: 1.5em 0;
         padding: 0;
         width: 4em;
         text-align: center;
+
+        &.box {
+          margin: 0 0 1em 0;
+        }
+      }
+
+      input[type=radio] {
+        display: none;
+      }
+
+      label {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='m0 0h20v20h-20z' stroke='%23000' stroke-width='2' fill='transparent'/%3E%3C/svg%3E");
+        background-position: 0 50%;
+        background-repeat: no-repeat;
+        background-size: 0.75em;
+        padding-left: 1.25em;
+        position: relative;
+
+        @keyframes draw-in {
+          0% {
+            height: 0em;
+          }
+          100% {
+            height: 0.625em;
+          }
+        }
+
+        &::before,
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0.325em;
+          width: 0.625em;
+          height: 0;
+          background-size: 0.625em;
+          left: 0.0625em;
+          animation-duration: 0.2s;
+          animation-timing-function: ease;
+          animation-fill-mode: forwards;
+        }
+
+        &::before {
+          animation-delay: 0.2s;
+          background-image: url("data:image/svg+xml,%3Csvg enable-background='new 0 0 64 64' height='64' viewBox='0 0 64 64' width='64' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%2326f' d='m53.1 56.6c-.3-.1-.5-.1-.8-.2-.9-.3-1.9-.5-2.7-1.1-.9-.7-1.5-1.6-2.3-2.5-.3-.3-.6-.5-1-.7-.8-.6-1.6-1.1-2.4-1.7-1.4-1-2.7-2-4.1-3-.4-.4-.8-1.1-1.3-1.4-1.4-.8-2.6-1.6-3.6-2.9-.3-.3-.8-.4-1.1-.7-1.2-1.1-2.3-2.3-3.5-3.4-2.8-2.5-5.7-5-8.5-7.5-1.1-1-2.2-2.1-3.4-3.1-1.3-1.2-2.5-2.3-3.8-3.4-.3-.3-.7-.5-1-.7-1.5-.8-2.4-2.2-3.7-3.2-1.1-.9-2.1-1.7-3.2-2.5-.7-.5-1.4-.9-2.1-1.4-1-.8-1.9-1.8-2.9-2.7-.1-.1-.3-.2-.4-.4 0-.1 0-.2 0-.3.5-.9 1-1.9 1.6-2.7.4-.6 1.1-1 1.5-1.5.7-1 1.6-1.2 2.7-1.3 1.1-.3 2.2-.7 3.3-.9h.5c.8.3 1.6.5 2.2 1 1 .8 1.9 1.9 2.9 2.8.6.6 1.2 1.1 1.8 1.6 1.3 1 2.6 2 3.9 3.1 1.3 1 2.5 2.1 3.8 3.2.6.5 1.3.9 2 1.4.1.1.2.1.2.2 1 1.8 2.8 2.8 4.2 4.2 2.2 2.4 4.8 4.4 7.2 6.7 1.1 1 2.1 2.1 3.2 3.1.8.8 1.7 1.4 2.6 2.1 1.3 1.1 2.4 2.2 3.8 3.1 1 .7 2.1 1.2 3.1 1.9 1.7 1.1 3.4 2.2 5.1 3.2.6.4 1.3.6 2 .9 1.5.5 2.8 1.3 3.3 2.8.2.4.2.9.4 1.4v1.2c-.1.2-.3.4-.3.7-.2.9-.4 1.9-1.1 2.5-1 .8-2 1.7-3.4 1.7-.1 0-.2.1-.3.2-1.5.2-3 .2-4.4.2z'/%3E%3C/svg%3E");
+        }
+
+        &::after {
+          background-image: url("data:image/svg+xml,%3Csvg enable-background='new 0 0 64 64' height='64' viewBox='0 0 64 64' width='64' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%2326f' d='m55.1 10.9c-.1.3-.2.6-.3 1-.2.5-.4.8-.9 1.1-.7.5-1.2 1.2-1.7 1.9-.9 1.1-1.6 2.3-2.5 3.4-.7.7-1.5 1.2-2.3 1.7-.6.5-1.4.8-2 1.3-.5.3-.8.8-1.2 1.2-1.1 1.2-2.2 2.3-3.2 3.5-.8.8-1.5 1.7-2.2 2.6-1 1.1-2 2.3-2.8 3.5-1.2 1.7-2.5 3.2-3.9 4.7-1 1.1-1.7 2.3-2.6 3.5-.7.9-1.4 1.8-2.1 2.7-.7 1-1.4 2-2.1 3-.5.8-1.3 1.5-1.6 2.3-.6 1.4-1.6 2.4-2.9 3.3-.3.2-.5.7-.8 1-.2.2-.2.5-.4.7-1.5 1-2.9 2-4.8 2.1-1.2.1-2.4.2-3.7.4-.1 0-.1.1-.2.2-.2 0-.4 0-.7 0-.1-.1-.2-.1-.3-.2-1.1-.3-2.2-.7-2.8-1.8-.3-.6-.6-1.3-.9-1.9 0-.3 0-.7 0-1 .8-.3 1.3-.8 1.5-1.7 0-.2.2-.4.4-.5.8-.6 1.6-1.1 2.3-1.6 1.1-.9 2.1-1.8 3.2-2.7.5-.4.9-.9 1.4-1.4.1-.1.1-.2.2-.2.8-1.3 1.7-2.6 2.6-3.9.7-1 1.6-1.9 2.3-2.8 1.1-1.5 2.1-3 3.2-4.4s2.4-2.7 3.6-4.1c.8-.9 1.6-1.8 2.3-2.8 1.2-1.7 2.5-3.3 4.2-4.7.6-.5 1.1-1.3 1.6-1.9 1-1.1 2.3-2.1 3.1-3.3 1.2-1.9 3.2-2.8 4.8-4.1 1.2-.9 2.3-1.8 3.6-2.6 1-.6 1.9-1.4 3.3-1.1.5.1 1.1-.4 1.7-.6h.5c.9.2 1.4.7 1.8 1.5.3.6.8 1.1 1.2 1.7.1.3.1.7.1 1z'/%3E%3C/svg%3E");
+        }
+      }
+
+      input[type=radio]:checked + label {
+        &::before,
+        &::after {
+          animation-name: draw-in;
+        }
+      }
+
+      input:focus,
+      textarea:focus {
+        outline:none !important;
+        box-shadow:none !important;
       }
 
       textarea {
@@ -309,6 +413,8 @@ export default {
         color: #26f;
         text-align: center;
         overflow: hidden;
+        display: block;
+        box-sizing: border-box;
       }
 
       label {
@@ -319,17 +425,7 @@ export default {
         }
       }
 
-      @keyframes pageturn-reveal {
-        to   { transform: scale(1.0); }
-      }
-
-      @keyframes pageturn-breathe {
-        from { transform: scale(1); }
-        to   { transform: scale(1.05); }
-      }
-
       .page-turn {
-        outline: none;
         cursor: pointer;
         position: absolute;
         width: 70%;
@@ -338,25 +434,30 @@ export default {
         bottom: 0;
         transform: scale(0);
         transform-origin: 100% 100%;
-        animation-delay: 0s, 1s;
-        animation-direction: normal, alternate-reverse;
-        animation-duration: 1s, 1s;
-        animation-iteration-count: 1, infinite;
-        animation-timing-function: ease, linear;
+        transition-property: transform;
+        transition-duration: 2s;
+        transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+        transition-delay: 0s;
+
+        &,
+        &:focus {
+          outline: none;
+        }
 
         img {
           display: block;
           width: 100%;
-        }
-
-        & {
-          animation-name: pageturn-reveal, pageturn-breathe; 
         }
       }
 
       @keyframes page-turn-tip-reveal {
         from { opacity: 0; }
         to   { opacity: 0.8; }
+      }
+
+      @keyframes page-turn-tip-hide {
+        from { opacity: 0.8; }
+        to   { opacity: 0; }
       }
 
       @keyframes page-turn-tip-breathe {
@@ -371,141 +472,262 @@ export default {
         font-size: 0.875em;
         text-align: center;
         opacity: 0;
-        animation-delay: 0s, 1s;
         animation-direction: normal, alternate-reverse;
         animation-duration: 1s, 1s;
         animation-iteration-count: 1, infinite;
         animation-timing-function: ease, linear;
       }
+    }
+  }
 
-      .page-turn[style=""] ~ .page-turn-tip {
+  .spread {
+    &.active {
+      z-index: 3;
+
+      .page {
+        filter: none;
+      }
+
+      .page.left {
+        transform: rotateY(0deg);
+      }
+    }
+    &.active + .spread {
+      z-index: 2;
+    }
+    &.complete {
+      .page-turn-tip {
         animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
+        animation-delay: 1s, 2s;
+      }
+    }
+    &.active.complete {
+
+      .page-turn {
+        transform: scale(1);
+      }
+      .page.right {
+        clip-path: polygon(0% 0%, 100% 0%, 100% 86.75%, 63% 100%, 0% 100%);
+      }
+    }
+    &.passed {
+      z-index: 2;
+
+      .page.left {
+        transform: rotateY(0deg);
+      }
+      .page.right {
+        transform: rotateY(-180deg);
       }
     }
   }
 
-  &.show-1 {
-    .spread-1 {
-      z-index: 3;
+  // &.show-1 {
+  //   .spread-1 {
+  //     z-index: 3;
 
-      .page { filter: none; }
+  //     .page {
+  //       filter: none;
+  //     }
 
-      .page.left {
-        transform: rotateY(0deg);
-      }
+  //     .page.left {
+  //       transform: rotateY(0deg);
+  //     }
+  //   }
+  //   .spread-2 {
+  //     z-index: 2;
+  //   }
+  // }
+
+  // &.show-2 {
+  //   .spread-1 {
+  //     z-index: 2;
+
+  //     .page.left {
+  //       transform: rotateY(0deg);
+  //     }
+
+  //     .page.right {
+  //       transform: rotateY(-180deg);
+  //     }
+
+  //     .page-turn {
+  //       animation-name: page-turn-reveal, page-turn-breathe;
+  //     }
+
+  //     .page-turn-tip {
+  //       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
+  //     }
+  //   }
+  //   .spread-2 {
+  //     z-index: 3;
+
+  //     .page { filter: none; }
+
+  //     .page.left {
+  //       transform: rotateY(0deg);
+  //     }
+
+  //     .page-turn {
+  //       animation-name: page-turn-reveal, page-turn-breathe;
+  //     }
+
+  //     .page-turn-tip {
+  //       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
+  //     }
+  //   }
+  //   .spread-3 {
+  //     z-index: 2;
+
+  //     .page.right {
+  //       transform: rotateY(0deg);
+  //     }
+  //   }
+  // }
+
+  // &.show-3 {
+  //   .spread-1 {
+  //     z-index: 2;
+
+  //     .page.left {
+  //       transform: rotateY(0deg);
+  //     }
+
+  //     .page.right {
+  //       transform: rotateY(-180deg);
+  //     }
+
+  //     .page-turn {
+  //       animation-name: page-turn-reveal, page-turn-breathe;
+  //     }
+
+  //     .page-turn-tip {
+  //       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
+  //     }
+  //   }
+  //   .spread-2 {
+  //     z-index: 2;
+
+  //     .page.left {
+  //       transform: rotateY(0deg);
+  //     }
+
+  //     .page.right {
+  //       transform: rotateY(-180deg);
+  //       clip-path: polygon(0% 0%, 100% 0%, 100% 86.5%, 64.5% 100%, 0% 100%);
+  //     }
+
+  //     .page-turn {
+  //       animation-name: page-turn-reveal, page-turn-breathe;
+  //     }
+
+  //     .page-turn-tip {
+  //       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
+  //     }
+  //   }
+  //   .spread-3 {
+  //     z-index: 3;
+
+  //     .page { filter: none; }
+
+  //     .page.left {
+  //       transform: rotateY(0deg);
+  //     }
+
+  //     .page-turn {
+  //       animation-name: page-turn-reveal, page-turn-breathe;
+  //     }
+
+  //     .page-turn-tip {
+  //       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
+  //     }
+  //   }
+  // }
+
+  // &.show-4 {
+  //   .spread-1 {
+  //     z-index: 2;
+
+  //     .page.left {
+  //       transform: rotateY(0deg);
+  //     }
+
+  //     .page.right {
+  //       transform: rotateY(-180deg);
+  //     }
+
+  //     .page-turn {
+  //       animation-name: page-turn-reveal, page-turn-breathe;
+  //     }
+
+  //     .page-turn-tip {
+  //       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
+  //     }
+  //   }
+  //   .spread-2 {
+  //     z-index: 2;
+
+  //     .page.left {
+  //       transform: rotateY(0deg);
+  //     }
+
+  //     .page.right {
+  //       transform: rotateY(-180deg);
+  //     }
+
+  //     .page-turn {
+  //       animation-name: page-turn-reveal, page-turn-breathe;
+  //     }
+
+  //     .page-turn-tip {
+  //       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
+  //     }
+  //   }
+  //   .spread-3 {
+  //     z-index: 2;
+
+  //     .page.left {
+  //       transform: rotateY(0deg);
+  //     }
+
+  //     .page.right {
+  //       transform: rotateY(-180deg);
+  //     }
+
+  //     .page-turn {
+  //       animation-name: page-turn-reveal, page-turn-breathe;
+  //     }
+
+  //     .page-turn-tip {
+  //       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
+  //     }
+  //   }
+  //   .spread-4 {
+  //     z-index: 3;
+
+  //     .page { filter: none; }
+
+  //     .page.left {
+  //       transform: rotateY(0deg);
+  //     }
+  //   }
+  // }
+}
+
+@media only screen and (max-width: 567px) {
+
+  .book {
+    height: 70vw;
+
+    .spread .page .body-text {
+      margin: 1em 0;
     }
-    .spread-2 {
-      z-index: 2;
-    }
+
+    .spread-login .page .body-text,
+    .spread-thank-you .page .body-text {
+      width: 70%;
+    } 
   }
 
-  &.show-2 {
-    .spread-1 {
-      z-index: 2;
-
-      .page.left {
-        transform: rotateY(0deg);
-      }
-
-      .page.right {
-        transform: rotateY(-180deg);
-      }
-    }
-    .spread-2 {
-      z-index: 3;
-
-      .page { filter: none; }
-
-      .page.left {
-        transform: rotateY(0deg);
-      }
-    }
-    .spread-3 {
-      z-index: 2;
-
-      .page.right {
-        transform: rotateY(0deg);
-      }
-    }
-  }
-
-  &.show-3 {
-    .spread-1 {
-      z-index: 2;
-
-      .page.left {
-        transform: rotateY(0deg);
-      }
-
-      .page.right {
-        transform: rotateY(-180deg);
-      }
-    }
-    .spread-2 {
-      z-index: 2;
-
-      .page.left {
-        transform: rotateY(0deg);
-      }
-
-      .page.right {
-        transform: rotateY(-180deg);
-      }
-    }
-    .spread-3 {
-      z-index: 3;
-
-      .page { filter: none; }
-
-      .page.left {
-        transform: rotateY(0deg);
-      }
-    }
-  }
-
-  &.show-4 {
-    .spread-1 {
-      z-index: 2;
-
-      .page.left {
-        transform: rotateY(0deg);
-      }
-
-      .page.right {
-        transform: rotateY(-180deg);
-      }
-    }
-    .spread-2 {
-      z-index: 2;
-
-      .page.left {
-        transform: rotateY(0deg);
-      }
-
-      .page.right {
-        transform: rotateY(-180deg);
-      }
-    }
-    .spread-3 {
-      z-index: 2;
-
-      .page.left {
-        transform: rotateY(0deg);
-      }
-
-      .page.right {
-        transform: rotateY(-180deg);
-      }
-    }
-    .spread-4 {
-      z-index: 3;
-
-      .page { filter: none; }
-
-      .page.left {
-        transform: rotateY(0deg);
-      }
-    }
-  }
 }
 </style>

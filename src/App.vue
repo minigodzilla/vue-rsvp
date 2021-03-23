@@ -1,5 +1,4 @@
 <template>
-  <div class="vignette"></div>
   <h1>Jenn and Steve's Wedding RSVP</h1>
   <GuestManager/>
 </template>
@@ -23,20 +22,17 @@ export default defineComponent({
 
 html {
   height: 100%;
+  overflow: hidden;
 }
 
 body {
   background-color: #222;
-  color: #222;
+  width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-image: url('/assets/bg.jpg');
-  background-position: 50% 50%;
-  background-size: cover;
-  font-family: 'Cormorant Garamond',serif;
-  font-size: 1.5vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  touch-action: none;
 }
 
 .svg-defs {
@@ -56,8 +52,53 @@ body {
   opacity: 0.75;
 }
 
+#app {
+  background-color: #222;
+  color: #222;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('/assets/bg.jpg');
+  background-position: 50% 50%;
+  background-size: cover;
+  font-family: 'Cormorant Garamond',serif;
+  font-size: 1.5vw;
+
+}
+
 h1 {
   display: none;
+}
+
+
+@media only screen and (max-width: 567px) {
+
+  .vignette {
+    background-image: radial-gradient(circle, rgba(0,0,0,0) 50%, rgba(0,0,0,1) 100%);
+  }
+
+  #app {
+    font-size: 2.25vw;
+    transition: transform 2s cubic-bezier(0.645, 0.045, 0.355, 1);
+  }
+
+  #app.initial {
+    transform: scale(2) translateX(-22.5%);
+  }
+
+  #app.zoom-out {
+    transform: scale(1) translateX(0);
+  }
+
+  #app.pan.left {
+    transform: scale(2) translateX(22.5%);
+  }
+
+  #app.pan.right {
+    transform: scale(2) translateX(-22.5%);
+  }
+
 }
 
 </style>
