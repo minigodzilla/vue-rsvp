@@ -398,7 +398,7 @@ export default {
       input[type=radio]:focus + label {
         outline:none !important;
         box-shadow:none !important;
-        background-color: red;
+        // background-color: red;
       }
 
       textarea {
