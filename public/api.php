@@ -72,6 +72,30 @@ else if ($method === 'PUT') {
 	}
 }
 
+else if ($method === 'POST') {
+
+	header("Content-Type:application/json");
+
+	$data = json_decode(file_get_contents("php://input"), true);
+
+	if ($data["name"]!="") {
+
+		$sql = "INSERT INTO guestCollect (name, email) VALUES (?, ?)";
+		$stmt = $conn->prepare($sql);
+		$stmt->bind_param("ss", $data["name"], $data["email"]);
+
+		$stmt->execute();
+
+		$stmt->close();
+
+		echo json_encode($data);
+
+	}
+	else {
+		http_response_code(400);
+	}
+}
+
 $conn->close();
 
 ?>

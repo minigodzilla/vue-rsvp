@@ -1,5 +1,4 @@
 <template>
-  <div>{{ this.guest }}</div>
   <div class="book">
     <div class="spread spread-login spread-1" :class="{'active' : (step == 1), 'passed' : (step > 1)}">
       <div class="page left">
@@ -7,69 +6,26 @@
       </div>
       <div class="page right">
         <img draggable="false" class="img img-small img-flourish" src="/assets/flourish-1.jpg"/>
-        <div class="body-text">
-          <h4>Please enter your invitation code to continue.</h4>
+        <div class="body-text name-field">
+          <h4>Please enter your name.</h4>
+          <input class="input box" ref="name" type="text" id="name" v-model="guest.name"/>
         </div>
-        <input class="input box" ref="id" type="text" inputmode="tel" id="id" v-model="guest.id" v-on:keyup.enter="lookupGuest"/>
-        <button v-on:click="lookupGuest">
-          <img draggable="false" class="img img-small" src="/assets/telephone.jpg"/>
+        <div class="body-text email-field">
+          <h4>Please enter your email.</h4>
+          <input class="input box" ref="email" type="text" id="email" v-model="guest.email"/>
+        </div>
+        <div class="body-text comment-field">
+          <h4>Please enter your comment.</h4>
+          <input class="input box" ref="comment" type="comment" id="comment"/>
+        </div>
+        <button class="btn" v-on:click="submitGuest()">
+          Submit
         </button>
-        <div class="error-message">{{ errorMessage }}</div>
+        <div style="color: red;">{{ this.errorMessage }}</div>
       </div>
     </div>
-    <div class="spread spread-meal spread-2" :class="{'active' : (step == 2), 'complete' : (guest.hasOwnProperty('guest1Meal') && guest.guest1Meal != ''), 'passed' : (step > 2)}">
-      <div class="page left" v-on:click="prev">
-        <img draggable="false" class="img img-full" src="/assets/beatrix-1.jpg"/>
-      </div>
-      <div class="page right">
-        <div class="body-text">
-          <h4>Hello {{ guest.guest1FirstName }}!<br/>
-          Please check your meal preference.</h4>
-          <div class="input-row">
-            <input type="radio" name="meal" value="veg" id="meal-veg" v-model="guest.guest1Meal" ref="meal"/>
-            <label for="meal-veg">Vegetable</label>
-            <input type="radio" name="meal" value="beef" id="meal-beef" v-model="guest.guest1Meal"/>
-            <label for="meal-beef">Beef</label>
-            <input type="radio" name="meal" value="chicken" id="meal-chicken" v-model="guest.guest1Meal"/>
-            <label for="meal-chicken">Chicken</label>
-          </div>
-        </div>
-        <div class="body-text" :class="{'hidden' : (guest.guest1Meal === ''), 'shown' : (guest.guest1Meal != '')}">
-          <h4>Any dietary notes? (allergies, restrictions, etc.?)</h4>
-          <div class="input-row">
-            <textarea spellcheck="false" v-model="guest.guest1DietaryNotes"></textarea>
-          </div>
-        </div>
-        <button class="page-turn" v-on:click="next('alcohol')">
-          <img draggable="false" src="/assets/page-turn.svg"/>
-        </button>
-        <div class="page-turn-tip" v-on:click="next('alcohol')">Turn the page to continue.</div>
-      </div>
-    </div>
-    <div class="spread spread-alcohol spread-3" :class="{'active' : (step == 3), 'complete' : (guest.hasOwnProperty('guest1AlcoholPref') && guest.guest1AlcoholPref != ''), 'passed' : (step > 3)}">
-      <div class="page left" v-on:click="prev('meal')">
-        <img draggable="false" class="img img-full" src="/assets/pooh-1.jpg"/>
-      </div>
-      <div class="page right">
-        <div class="body-text">
-          <h4>Please tell us your preference for alcoholic drinks.</h4>
-          <div class="input-row">
-            <input type="radio" name="alcohol" value="none" id="alcohol-none" v-model="guest.guest1AlcoholPref" ref="alcohol"/>
-            <label for="alcohol-none">None</label>
-            <input type="radio" name="alcohol" value="beer" id="alcohol-beer" v-model="guest.guest1AlcoholPref"/>
-            <label for="alcohol-beer">Beer</label>
-            <input type="radio" name="alcohol" value="wine" id="alcohol-wine" v-model="guest.guest1AlcoholPref"/>
-            <label for="alcohol-wine">Wine</label>
-          </div>
-        </div>
-        <button class="page-turn" v-on:click="modifyGuest">
-          <img draggable="false" src="/assets/page-turn.svg"/>
-        </button>
-        <div class="page-turn-tip" v-on:click="modifyGuest">Turn the page to continue.</div>
-      </div>
-    </div>
-    <div class="spread spread-thank-you spread-4" :class="{'active' : (step == 4)}">
-      <div class="page left" v-on:click="prev">
+    <div class="spread spread-thank-you spread-2" :class="{'active' : (step == 2)}">
+      <div class="page left" v-on:click="prev()">
         <img draggable="false" class="img img-full" src="/assets/birds.jpg"/>
       </div>
       <div class="page right">
@@ -99,7 +55,7 @@ export default {
   },
   mounted() {
     this.initialCamera();
-    this.focusInput('id');
+    this.focusInput('name');
   },
   methods: {
     focusInput(i) {
@@ -122,42 +78,55 @@ export default {
     initialState() {
       return {
         step: 1,
+        hasErrors: false,
         errorMessage: '',
-        guest: []
+        guest: {
+          name: '',
+          email: ''
+        }
       }
     },
     reset() {
         Object.assign(this.$data, this.initialState());
     },
-    lookupGuest() {
+    submitGuest() {
 
-      const guestID = document.getElementById('id').value;
+      const commentField = document.getElementById('comment');
 
-      if (guestID) {
-        axios.get(`${baseURL}${guestID}`)
+      this.hasErrors = false;
+      this.errorMessage = '';
+
+      // lots of validation has to happen
+
+      if (!this.guest.name) {
+        this.hasErrors = true;
+        this.errorMessage = 'Please enter your name.';
+        return false;
+      }
+
+      if (!this.guest.email) {
+        this.hasErrors = true;
+        this.errorMessage = 'Please enter your email.';
+        return false;
+      }
+
+      if (commentField.value) {
+        console.log('fake submission');
+        this.next();
+        return false;
+      }
+
+      if(this.hasErrors == false) {
+        axios.post(`${baseURL}`, this.guest)
           .then(response => {
-            this.guest = response.data;
-            this.next('meal');
+            this.next();
           })
           .catch(error => {
-            this.errorMessage = error.message;
+            this.errorMessage = error;
           });
       }
-      else
-      {
-        this.errorMessage = 'Please enter an ID.';
-      }
 
-    },
-    modifyGuest() {
 
-      axios.put(`${baseURL}${this.guest.id}`, this.guest)
-        .then(response => {
-          this.next();
-        })
-        .catch(error => {
-          console.log(error);
-        });
     },
     cameraPan() {
 
@@ -300,6 +269,12 @@ export default {
         text-align: center;
         margin: 1em 0;
 
+        &.comment-field {
+          position: absolute;
+          opacity: 0;
+          pointer-events: none;
+        }
+
         h4 {
           margin-top: 1em;
           margin-bottom: 1em;
@@ -340,7 +315,7 @@ export default {
         text-align: center;
 
         &.box {
-          margin: 0 0 1em 0;
+          margin: 0;
         }
       }
 
@@ -527,197 +502,6 @@ export default {
       }
     }
   }
-
-  // &.show-1 {
-  //   .spread-1 {
-  //     z-index: 3;
-
-  //     .page {
-  //       filter: none;
-  //     }
-
-  //     .page.left {
-  //       transform: rotateY(0deg);
-  //     }
-  //   }
-  //   .spread-2 {
-  //     z-index: 2;
-  //   }
-  // }
-
-  // &.show-2 {
-  //   .spread-1 {
-  //     z-index: 2;
-
-  //     .page.left {
-  //       transform: rotateY(0deg);
-  //     }
-
-  //     .page.right {
-  //       transform: rotateY(-180deg);
-  //     }
-
-  //     .page-turn {
-  //       animation-name: page-turn-reveal, page-turn-breathe;
-  //     }
-
-  //     .page-turn-tip {
-  //       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-  //     }
-  //   }
-  //   .spread-2 {
-  //     z-index: 3;
-
-  //     .page { filter: none; }
-
-  //     .page.left {
-  //       transform: rotateY(0deg);
-  //     }
-
-  //     .page-turn {
-  //       animation-name: page-turn-reveal, page-turn-breathe;
-  //     }
-
-  //     .page-turn-tip {
-  //       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-  //     }
-  //   }
-  //   .spread-3 {
-  //     z-index: 2;
-
-  //     .page.right {
-  //       transform: rotateY(0deg);
-  //     }
-  //   }
-  // }
-
-  // &.show-3 {
-  //   .spread-1 {
-  //     z-index: 2;
-
-  //     .page.left {
-  //       transform: rotateY(0deg);
-  //     }
-
-  //     .page.right {
-  //       transform: rotateY(-180deg);
-  //     }
-
-  //     .page-turn {
-  //       animation-name: page-turn-reveal, page-turn-breathe;
-  //     }
-
-  //     .page-turn-tip {
-  //       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-  //     }
-  //   }
-  //   .spread-2 {
-  //     z-index: 2;
-
-  //     .page.left {
-  //       transform: rotateY(0deg);
-  //     }
-
-  //     .page.right {
-  //       transform: rotateY(-180deg);
-  //       clip-path: polygon(0% 0%, 100% 0%, 100% 86.5%, 64.5% 100%, 0% 100%);
-  //     }
-
-  //     .page-turn {
-  //       animation-name: page-turn-reveal, page-turn-breathe;
-  //     }
-
-  //     .page-turn-tip {
-  //       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-  //     }
-  //   }
-  //   .spread-3 {
-  //     z-index: 3;
-
-  //     .page { filter: none; }
-
-  //     .page.left {
-  //       transform: rotateY(0deg);
-  //     }
-
-  //     .page-turn {
-  //       animation-name: page-turn-reveal, page-turn-breathe;
-  //     }
-
-  //     .page-turn-tip {
-  //       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-  //     }
-  //   }
-  // }
-
-  // &.show-4 {
-  //   .spread-1 {
-  //     z-index: 2;
-
-  //     .page.left {
-  //       transform: rotateY(0deg);
-  //     }
-
-  //     .page.right {
-  //       transform: rotateY(-180deg);
-  //     }
-
-  //     .page-turn {
-  //       animation-name: page-turn-reveal, page-turn-breathe;
-  //     }
-
-  //     .page-turn-tip {
-  //       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-  //     }
-  //   }
-  //   .spread-2 {
-  //     z-index: 2;
-
-  //     .page.left {
-  //       transform: rotateY(0deg);
-  //     }
-
-  //     .page.right {
-  //       transform: rotateY(-180deg);
-  //     }
-
-  //     .page-turn {
-  //       animation-name: page-turn-reveal, page-turn-breathe;
-  //     }
-
-  //     .page-turn-tip {
-  //       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-  //     }
-  //   }
-  //   .spread-3 {
-  //     z-index: 2;
-
-  //     .page.left {
-  //       transform: rotateY(0deg);
-  //     }
-
-  //     .page.right {
-  //       transform: rotateY(-180deg);
-  //     }
-
-  //     .page-turn {
-  //       animation-name: page-turn-reveal, page-turn-breathe;
-  //     }
-
-  //     .page-turn-tip {
-  //       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-  //     }
-  //   }
-  //   .spread-4 {
-  //     z-index: 3;
-
-  //     .page { filter: none; }
-
-  //     .page.left {
-  //       transform: rotateY(0deg);
-  //     }
-  //   }
-  // }
 }
 
 @media only screen and (max-width: 567px) {

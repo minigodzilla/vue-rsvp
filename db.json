@@ -1,31 +1,54 @@
 {
   "guests": [
     {
-      "id": "1",
-      "email": "wendy@hotmail.com",
-      "guest1FirstName": "Wendy",
-      "guest1LastName": "Young",
-      "guest1Meal": "",
-      "guest1DietaryNotes": "",
-      "guest1AlcoholPref": ""
+      "name": "Stewey",
+      "email": "stevediabo@gmail.com",
+      "id": "g97Drtw"
     },
     {
-      "id": "2",
-      "email": "mm.diabo@gmail.com",
-      "guest1FirstName": "Margaret",
-      "guest1LastName": "Diabo",
-      "guest1Meal": "",
-      "guest1DietaryNotes": "Lactose intolerant",
-      "guest1AlcoholPref": ""
+      "name": "",
+      "email": "",
+      "id": "XOJfuA9"
     },
     {
-      "id": "3",
-      "email": "samgorkav@gmail.com",
-      "guest1FirstName": "Sam",
-      "guest1LastName": "Kavanagh",
-      "guest1Meal": "beef",
-      "guest1DietaryNotes": "No tomatoes",
-      "guest1AlcoholPref": "wine"
+      "name": "",
+      "email": "",
+      "id": "Gdlfby1"
+    },
+    {
+      "name": "",
+      "email": "",
+      "id": "6Oi1wRc"
+    },
+    {
+      "name": "",
+      "email": "",
+      "id": "G-nsXkE"
+    },
+    {
+      "name": "",
+      "email": "",
+      "id": "2J7ddpT"
+    },
+    {
+      "name": "",
+      "email": "",
+      "id": "v055MHs"
+    },
+    {
+      "name": "",
+      "email": "",
+      "id": "1KF6tIt"
+    },
+    {
+      "name": "Steve Diabo",
+      "email": "stevediabo@gmail.com",
+      "id": "HfwqKws"
+    },
+    {
+      "name": "Steve Diabo",
+      "email": "stevediabo@gmail.com",
+      "id": "N-W-gIv"
     }
   ]
 }
