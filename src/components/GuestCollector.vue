@@ -12,7 +12,7 @@
         </div>
         <div class="body-text email-field">
           <h4>Please enter your email.</h4>
-          <input class="input box" ref="email" type="text" id="email" v-model="guest.email"/>
+          <input class="input box" ref="email" type="text" id="email" v-model="guest.email" v-on:keyup.enter="submitGuest()"/>
         </div>
         <div class="body-text comment-field">
           <h4>Please enter your comment.</h4>
@@ -47,7 +47,7 @@ import axios from "axios";
 
 const baseURL = 
   process.env.NODE_ENV === 'development' ? '//localhost:3000/guests/' : 'guests/'
-//  process.env.NODE_ENV === 'development' ? 'https://jennandsteve.ca/guests/' : 'guests/'
+  // process.env.NODE_ENV === 'development' ? 'https://jennandsteve.ca/guests/' : 'guests/'
 
 export default {
   data() {
