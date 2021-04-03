@@ -96,7 +96,7 @@ export default {
       this.hasErrors = false;
       this.errorMessage = '';
 
-      // lots of validation has to happen
+      // validate name and email
 
       if (!this.guest.name) {
         this.hasErrors = true;
@@ -111,7 +111,7 @@ export default {
       }
 
       if (commentField.value) {
-        console.log('fake submission');
+        // it's a faaaake
         this.next();
         return false;
       }
@@ -122,7 +122,7 @@ export default {
             this.next();
           })
           .catch(error => {
-            this.errorMessage = error;
+            this.errorMessage = error.message;
           });
       }
 
