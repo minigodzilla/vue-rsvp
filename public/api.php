@@ -78,7 +78,7 @@ else if ($method === 'POST') {
 
 	$data = json_decode(file_get_contents("php://input"), true);
 
-	if ($data["name"]!="") {
+	if ($data["name"]!="" && $data["email"]!="") {
 
 		$sql = "INSERT INTO guestCollect (name, email) VALUES (?, ?)";
 		$stmt = $conn->prepare($sql);
