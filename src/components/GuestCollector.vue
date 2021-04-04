@@ -2,10 +2,10 @@
   <div class="book">
     <div class="spread spread-login spread-1" :class="{'active' : (step == 1), 'passed' : (step > 1)}">
       <div class="page left">
-        <!-- <img draggable="false" class="img img-full" src="/assets/botany-1.jpg"/> -->
+        <img draggable="false" class="img img-full" src="/assets/botany-1.jpg"/>
       </div>
       <div class="page right">
-        <img draggable="false" class="img img-small img-flourish" src="/assets/flourish-1.jpg"/>
+        <img draggable="false" class="img img-small img-flourish" src="/assets/flourish-1.svg"/>
         <div class="body-text name-field">
           <h4>Please enter your name.</h4>
           <input class="input box" ref="name" type="text" id="name" v-model="guest.name"/>
@@ -22,6 +22,7 @@
           Submit
         </button>
         <div style="color: red;">{{ this.errorMessage }}</div>
+        <img draggable="false" class="img img-small img-flourish" src="/assets/flourish-1.svg"/>
       </div>
     </div>
     <div class="spread spread-thank-you spread-2" :class="{'active' : (step == 2)}">
@@ -219,6 +220,10 @@ export default {
 
       &.right {
         right: 0;
+        // background-image: url('/assets/page-tl.svg'), url('/assets/page-tr.svg'), url('/assets/page-bl.svg'), url('/assets/page-br.svg'), linear-gradient(to right, #a89373 0%, #c1aa87 1%, #c0a885 12.5%, #a28c6c 50%, #a58e6e 100%);
+        // background-position: 2.5vw 2.5vw, 37vw 2.5vw, 2.5vw 40.75vw, 37vw 40.75vw, 0;
+        // background-repeat: no-repeat;
+        // background-size: 5vw, 5vw, 5vw, 5vw, 100%;
         background-image: linear-gradient(to right, #a89373 0%, #c1aa87 1%, #c0a885 12.5%, #a28c6c 50%, #a58e6e 100%);
         clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 100% 100%, 0% 100%);
       }
@@ -236,10 +241,20 @@ export default {
       }
 
       button {
-        width: 25%;
+        width: 13vw;
+        height: 4vw;
+        margin: 1em 0;
         padding: 0;
         border: 0 none;
-        background: transparent;
+        background-color: transparent;
+        background-image: url('/assets/btn.svg');
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+        background-size: contain;
+        font-family: 'Cormorant Garamond',serif;
+        font-size: 1em;
+        font-weight: 800;
+        text-transform: uppercase;
       }
 
       .img-small {
@@ -249,7 +264,7 @@ export default {
       }
 
       .img-flourish {
-        width: 30%;
+        width: 20vw;
         margin: 1em 0;
       }
 
@@ -265,9 +280,8 @@ export default {
       }
 
       .body-text {
-        max-width: 35vw;
+        width: 20vw;
         text-align: center;
-        margin: 1em 0;
 
         &.comment-field {
           position: absolute;
@@ -300,22 +314,28 @@ export default {
         font-size: 0.875em;
       }
 
+      .input,
       .input {
         appearance: none;
-        font-size: 2em;
-        font-family: serif;
-        border-radius: 0;
-        border-style: solid;
-        border-width: 0.05em;
-        border-color: #888;
-        color: #333;
-        margin: 1.5em 0;
+        width: 100%;
+        background: url('/assets/textarea.svg');
+        background-repeat: repeat;
+        background-size: 2em;
+        border: 0 none;
+        margin: 1em 0;
         padding: 0;
-        width: 4em;
+        font-family: 'homemade apple',script;
+        font-size: 1em;
+        line-height: 2em;
+        color: #26f;
         text-align: center;
+        display: block;
+        box-sizing: border-box;
 
-        &.box {
-          margin: 0;
+        &#email {
+          font-family: 'Cormorant Garamond',serif;
+          font-weight: 700;
+          background-position: 0 6.0625vw;
         }
       }
 

@@ -1,5 +1,4 @@
 <template>
-  <div>{{ this.guest }}</div>
   <div class="book">
     <div class="spread spread-login spread-1" :class="{'active' : (step == 1), 'passed' : (step > 1)}">
       <div class="page left">
