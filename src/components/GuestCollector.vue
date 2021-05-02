@@ -58,7 +58,7 @@ export default {
   },
   mounted() {
     this.initialCamera();
-    this.focusInput('name');
+    //this.focusInput('name');
   },
   methods: {
     focusInput(i) {
@@ -153,6 +153,11 @@ export default {
       const app = document.getElementById('app');
       const card = document.getElementById('card');
 
+
+      setTimeout(function() {
+        card.classList.add('presented');
+      }, 50);
+
       setTimeout(function() {
         card.classList.add('flipped');
       }, 5000);
@@ -183,10 +188,11 @@ export default {
 
 .thank-you {
   position: absolute;
-  color: #fff;
+  color: #bea684;
   font-style: italic;
   font-family: 'IM Fell Double Pica', serif;
   font-size: 5em;
+  text-shadow: 0.5vw 0.325vw 1.5vw rgba(0,0,0,0.5);
   display: none;
 
   &.shown {
@@ -200,6 +206,7 @@ export default {
   width: 80vw;
   height: 55vw;
   transition: transform 2s ease;
+  transform: translateY(150vw) rotate(-22.5deg);
 
   &.flipped {
 
@@ -212,6 +219,10 @@ export default {
         transform: rotateZ(0deg) rotateX(0deg);
       }
     }
+  }
+
+  &.presented {
+    transform: translateY(0) rotate(0);
   }
 
   &.completed {
@@ -232,6 +243,7 @@ export default {
     justify-content: start;
     padding: 0.75em;
     transition: transform 2s ease;
+    box-shadow: 0.5vw 0.325vw 1.5vw rgba(0,0,0,0.5);
 
     &.front {
       transform: rotateZ(-2deg) rotateX(0deg);
