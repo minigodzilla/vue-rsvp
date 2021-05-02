@@ -155,17 +155,17 @@ export default {
 
       setTimeout(function() {
         card.classList.add('flipped');
-      }, 2500);
+      }, 5000);
 
 
       setTimeout(function() {
         app.classList.add('pan','left');
-      }, 4500);
+      }, 5000);
  
       setTimeout(function() {
         app.classList.remove('left');
         app.classList.add('right');
-      }, 7000);
+      }, 10000);
  
     },
     cardFlip() {
@@ -199,7 +199,7 @@ export default {
   position: relative;
   width: 80vw;
   height: 55vw;
-  transition: transform 1s ease;
+  transition: transform 2s ease;
 
   &.flipped {
 
@@ -231,7 +231,7 @@ export default {
     align-items: center;
     justify-content: start;
     padding: 0.75em;
-    transition: transform 1s ease;
+    transition: transform 2s ease;
 
     &.front {
       transform: rotateZ(-2deg) rotateX(0deg);
