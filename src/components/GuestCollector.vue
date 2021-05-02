@@ -1,45 +1,47 @@
 <template>
-  <div class="book">
-    <div class="spread spread-login spread-1" :class="{'active' : (step == 1), 'passed' : (step > 1)}">
-      <div class="page left">
-        <img draggable="false" class="img img-full" src="/assets/botany-1.jpg"/>
+  <div class="thank-you" :class="{'shown' : (step == 2)}">Thank You</div>
+  <div class="card" id="card" :class="{'completed flipped' : (step == 2)}">
+    <div class="face front" v-on:click="cardFlip()">
+      <img draggable="false" class="img img-photo" src="/assets/photo.jpg"/>
+      <div class="caption">Save The Date</div>
+    </div>
+    <div class="face back">
+      <div class="left-side" v-on:click="cardFlip()">
+        <div class="small-caps" style="font-size: 1.25em;">Sunday, September 5, 2021</div>
+        <div class="italic" style="font-size: 0.8125em; letter-spacing: 0.0625em; margin-bottom: 1.5em;">For the wedding celebration of</div>
+        <img draggable="false" class="img img-logo" src="/assets/jenn-and-steve.svg"/>
+        <div class="small-caps" style="margin-top: 1.5em; text-transform: lowercase; letter-spacing: 0.125em;">Toronto, Ontario</div>
+        <div class="small-caps" style="text-transform: lowercase; letter-spacing: 0.125em;">Canada</div>
       </div>
-      <div class="page right">
-        <img draggable="false" class="img img-small img-flourish" src="/assets/flourish-1.svg"/>
-        <div class="body-text name-field">
-          <h4>Please enter your name.</h4>
-          <input class="input box" ref="name" type="text" id="name" v-model="guest.name"/>
+      <div class="right-side">
+        <div class="small-caps" style="letter-spacing: 0.03125em">Please register to receive updates.</div>
+        <div class="name-field">
+          <input class="input box" placeholder="Your Name" ref="name" type="text" id="name" v-model="guest.name"/>
         </div>
-        <div class="body-text email-field">
-          <h4>Please enter your email.</h4>
-          <input class="input box" ref="email" type="text" id="email" v-model="guest.email" v-on:keyup.enter="submitGuest()"/>
+        <div class="email-field">
+          <input class="input box" placeholder="Your Email" ref="email" type="text" id="email" v-model="guest.email"/>
         </div>
-        <div class="body-text comment-field">
-          <h4>Please enter your comment.</h4>
-          <input class="input box" ref="comment" type="comment" id="comment"/>
+        <div class="location-field">
+          <input class="input box" placeholder="Your Location" ref="location" type="text" id="location" v-model="guest.location" v-on:keyup.enter="submitGuest()"/>
+        </div>
+        <div class="comment-field">
+          <input class="input box" placeholder="Your Comment" ref="comment" type="comment" id="comment"/>
         </div>
         <button class="btn" v-on:click="submitGuest()">
-          Submit
+          Register
         </button>
         <div style="color: red;">{{ this.errorMessage }}</div>
-        <img draggable="false" class="img img-small img-flourish" src="/assets/flourish-1.svg"/>
+        <!-- <img draggable="false" class="img img-small img-flourish" src="/assets/flourish-1.svg"/> -->
       </div>
     </div>
-    <div class="spread spread-thank-you spread-2" :class="{'active' : (step == 2)}">
-      <div class="page left" v-on:click="prev()">
-        <img draggable="false" class="img img-full" src="/assets/birds.jpg"/>
-      </div>
-      <div class="page right">
-        <img draggable="false" class="img img-small img-flourish" src="/assets/flourish-1.jpg"/>
-        <div class="body-text">
-          <h3>Thank you!</h3>
-          <p>We have your RSVP.</p>
-          <p>You may return at any time to make changes.</p>
-          <p>We can't wait to see you!</p>
-        </div>
-        <img draggable="false" class="img img-small img-flourish" src="/assets/flourish-2.jpg"/>
+    <!-- <div class="page left">
+      <img draggable="false" class="img img-photo" src="/assets/photo.jpg"/>
+      <div class="body-text">
+        Save the Date
       </div>
     </div>
+    <div class="page right">
+    </div> -->
   </div>
 </template>
 
@@ -149,10 +151,28 @@ export default {
     initialCamera() {
 
       const app = document.getElementById('app');
+      const card = document.getElementById('card');
 
       setTimeout(function() {
-        app.classList.add('pan','right');
+        card.classList.add('flipped');
       }, 2500);
+
+
+      setTimeout(function() {
+        app.classList.add('pan','left');
+      }, 4500);
+ 
+      setTimeout(function() {
+        app.classList.remove('left');
+        app.classList.add('right');
+      }, 7000);
+ 
+    },
+    cardFlip() {
+
+      const card = document.getElementById('card');
+
+      card.classList.toggle('flipped');
 
     }
   }
@@ -161,383 +181,298 @@ export default {
 
 <style lang="scss">
 
-.book {
-  position: relative;
-  background: #393617;
-  width: 90vw;
-  height: 50vw;
-  perspective: 200vw;
-  border-radius: 0.5vw;
-  box-shadow: 1.5vw 0.75vw 2vw #000, inset 0.125vw 0.125vw 0.1vw #757154, inset -0.125vw -0.125vw 0.1vw #0e0a07, inset -1vw -1vw 2vw rgba(0,0,0,0.5);
+.thank-you {
+  position: absolute;
+  color: #fff;
+  font-style: italic;
+  font-family: 'IM Fell Double Pica', serif;
+  font-size: 5em;
+  display: none;
 
-  &::before {
-    content: '';
+  &.shown {
+    display: block;
+  }
+}
+
+.card {
+  perspective: 200vw;
+  position: relative;
+  width: 80vw;
+  height: 55vw;
+  transition: transform 1s ease;
+
+  &.flipped {
+
+    .face {
+      &.front {
+        transform: rotateZ(2deg) rotateX(180deg);
+      }
+
+      &.back {
+        transform: rotateZ(0deg) rotateX(0deg);
+      }
+    }
+  }
+
+  &.completed {
+    transform: translateY(-150vw) rotate(+22.5deg);
+  }
+
+  .face {
+    backface-visibility: hidden;
+    background-color: #bea684;
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    background-image: url('/assets/leather.jpg');
-    background-size: 15vw;
-    mix-blend-mode: soft-light;
-    border-radius: 0.5vw;
-  }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    padding: 0.75em;
+    transition: transform 1s ease;
 
-  .spread {
-    position: absolute;
-    z-index: 1;
-    top: 1vw;
-    right: 1vw;
-    bottom: 1vw;
-    left: 1vw;
-    transition: z-index 2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    &.front {
+      transform: rotateZ(-2deg) rotateX(0deg);
+    }
 
-    .page {
-      backface-visibility: hidden;
+    &.back {
+      transform: rotateZ(-2deg) rotateX(-180deg);
+      background-image: linear-gradient(135deg,
+        #3c487f 0%,
+        #3c487f 19%,
+        #bea684 19%,
+        #bea684 25%,
+        #bf514b 25%,
+        #bf514b 44%,
+        #bea684 44%,
+        #bea684 50%,
+        #3c487f 50%,
+        #3c487f 69%,
+        #bea684 69%,
+        #bea684 75%,
+        #bf514b 75%,
+        #bf514b 94%,
+        #bea684 94%,
+        #bea684 100%
+        );
+      background-size: 8em 8em;
+
+      &::before {
+        content: '';
+        position: absolute;
+        z-index: 0;
+        top: 0.75em;
+        right: 0.75em;
+        bottom: 0.75em;
+        left: 0.75em;
+        background-color: #bea684;
+        background-image: url('/assets/stamp.jpg');
+        background-repeat: no-repeat;
+        background-position: 97% 5%;
+        background-size: 14em;
+      }
+    }
+
+    .img-photo {
+      width: 100%;
+      height: 90%;
+      object-fit: cover;
+      object-position: 50% 100%;
+    }
+
+    .img-logo {
+      width: 65%;
+      margin: 0 auto;
+    }
+
+    .caption {
+      line-height: 2.875em;
+      font-family: 'IM Fell DW Pica SC', serif;
+      font-size: 1.5em;
+      letter-spacing: 0.125em;
+    }
+
+    > div,
+    > img {
+      user-select: none;
+    }
+
+    > div,
+    > img,
+    > input,
+    > button {
+      mix-blend-mode: multiply;
+    }
+
+    .img-small {
+      display: block;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .img-flourish {
+      width: 10em;
+      margin: 1em 0;
+    }
+
+    .img-full {
+      max-height: 85%;
+      max-width: 100%;
+    }
+
+    @keyframes reveal-form-field {
+      0%    { height: 0;    opacity: 0; }
+      50%   { height: 12em; opacity: 0; }
+      100%  { height: 12em; opacity: 1; }
+    }
+
+    .left-side {
       position: absolute;
-      top: 0;
-      bottom: 0;
       width: 50%;
+      top: 6em;
+      left: 0;
+      bottom: 6em;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      transform: rotateY(0deg);
-      transform-origin: 0% 0%;
-      filter: brightness(0.9) contrast(1.1);
-      transition-property: transform, filter, clip-path;
-      transition-delay: 0s;
-      transition-duration: 2s;
-      transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+      text-align: center;
+      border-right: 0.03125em solid #000;
+    }
 
-      &.left {
-        left: 0;
-        background-image: linear-gradient(to left, #8f7c5f 0%, #ae9776 12.5%, #bea683 50%, #bea684 100%);
-        transform-origin: 100% 0;
-        transform: rotateY(180deg);
-        z-index: 1;
+    .right-side {
+      position: absolute;
+      width: 50%;
+      top: 5em;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+
+      &.date-place {
       }
 
-      &.right {
-        right: 0;
-        // background-image: url('/assets/page-tl.svg'), url('/assets/page-tr.svg'), url('/assets/page-bl.svg'), url('/assets/page-br.svg'), linear-gradient(to right, #a89373 0%, #c1aa87 1%, #c0a885 12.5%, #a28c6c 50%, #a58e6e 100%);
-        // background-position: 2.5vw 2.5vw, 37vw 2.5vw, 2.5vw 40.75vw, 37vw 40.75vw, 0;
-        // background-repeat: no-repeat;
-        // background-size: 5vw, 5vw, 5vw, 5vw, 100%;
-        background-image: linear-gradient(to right, #a89373 0%, #c1aa87 1%, #c0a885 12.5%, #a28c6c 50%, #a58e6e 100%);
-        clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 100% 100%, 0% 100%);
-      }
-
-      > div,
-      > img {
-        user-select: none;
-      }
-
-      > div,
-      > img,
-      > input,
-      > button {
-        mix-blend-mode: multiply;
-      }
-
-      button {
-        width: 13vw;
-        height: 4vw;
-        margin: 1em 0;
-        padding: 0;
-        border: 0 none;
-        background-color: transparent;
-        background-image: url('/assets/btn.svg');
-        background-position: 50% 50%;
-        background-repeat: no-repeat;
-        background-size: contain;
-        font-family: 'Cormorant Garamond',serif;
-        font-size: 1em;
-        font-weight: 800;
-        text-transform: uppercase;
-      }
-
-      .img-small {
-        display: block;
-        margin: 0 auto;
-        width: 100%;
-      }
-
-      .img-flourish {
-        width: 20vw;
-        margin: 1em 0;
-      }
-
-      .img-full {
-        max-height: 85%;
-        max-width: 100%;
-      }
-
-      @keyframes reveal-form-field {
-        0%    { height: 0;    opacity: 0; }
-        50%   { height: 12em; opacity: 0; }
-        100%  { height: 12em; opacity: 1; }
-      }
-
-      .body-text {
-        width: 20vw;
-        text-align: center;
-
-        &.comment-field {
-          position: absolute;
-          opacity: 0;
-          pointer-events: none;
-        }
-
-        h4 {
-          margin-top: 1em;
-          margin-bottom: 1em;
-        }
-
-        &.hidden {
-          height: 0;
-          opacity: 0;
-        }
-
-        &.shown {
-          animation-name: reveal-form-field;
-          animation-duration: 1s;
-          animation-timing-function: ease;
-          animation-fill-mode: forwards;
-        }
-      }
-
-      .error-message {
-        color: #f00;
-        height: 1em;
+      h4 {
         margin-top: 1em;
-        font-size: 0.875em;
+        margin-bottom: 1em;
       }
 
-      .input,
-      .input {
-        appearance: none;
-        width: 100%;
-        background: url('/assets/textarea.svg');
-        background-repeat: repeat;
-        background-size: 2em;
-        border: 0 none;
-        margin: 1em 0;
-        padding: 0;
-        font-family: 'homemade apple',script;
-        font-size: 1em;
-        line-height: 2em;
-        color: #26f;
-        text-align: center;
-        display: block;
-        box-sizing: border-box;
-
-        &#email {
-          font-family: 'Cormorant Garamond',serif;
-          font-weight: 700;
-          background-position: 0 6.0625vw;
-        }
-      }
-
-      input[type=radio] {
-        width: 0;
+      &.hidden {
         height: 0;
-        margin: 0;
-      }
-
-      label {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='m0 0h20v20h-20z' stroke='%23000' stroke-width='2' fill='transparent'/%3E%3C/svg%3E");
-        background-position: 0 50%;
-        background-repeat: no-repeat;
-        background-size: 0.75em;
-        padding-left: 1.25em;
-        position: relative;
-
-        @keyframes draw-in {
-          0% {
-            height: 0em;
-          }
-          100% {
-            height: 0.625em;
-          }
-        }
-
-        &::before,
-        &::after {
-          content: '';
-          position: absolute;
-          top: 0.325em;
-          width: 0.625em;
-          height: 0;
-          background-size: 0.625em;
-          left: 0.0625em;
-          animation-duration: 0.2s;
-          animation-timing-function: ease;
-          animation-fill-mode: forwards;
-        }
-
-        &::before {
-          animation-delay: 0.2s;
-          background-image: url("data:image/svg+xml,%3Csvg enable-background='new 0 0 64 64' height='64' viewBox='0 0 64 64' width='64' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%2326f' d='m53.1 56.6c-.3-.1-.5-.1-.8-.2-.9-.3-1.9-.5-2.7-1.1-.9-.7-1.5-1.6-2.3-2.5-.3-.3-.6-.5-1-.7-.8-.6-1.6-1.1-2.4-1.7-1.4-1-2.7-2-4.1-3-.4-.4-.8-1.1-1.3-1.4-1.4-.8-2.6-1.6-3.6-2.9-.3-.3-.8-.4-1.1-.7-1.2-1.1-2.3-2.3-3.5-3.4-2.8-2.5-5.7-5-8.5-7.5-1.1-1-2.2-2.1-3.4-3.1-1.3-1.2-2.5-2.3-3.8-3.4-.3-.3-.7-.5-1-.7-1.5-.8-2.4-2.2-3.7-3.2-1.1-.9-2.1-1.7-3.2-2.5-.7-.5-1.4-.9-2.1-1.4-1-.8-1.9-1.8-2.9-2.7-.1-.1-.3-.2-.4-.4 0-.1 0-.2 0-.3.5-.9 1-1.9 1.6-2.7.4-.6 1.1-1 1.5-1.5.7-1 1.6-1.2 2.7-1.3 1.1-.3 2.2-.7 3.3-.9h.5c.8.3 1.6.5 2.2 1 1 .8 1.9 1.9 2.9 2.8.6.6 1.2 1.1 1.8 1.6 1.3 1 2.6 2 3.9 3.1 1.3 1 2.5 2.1 3.8 3.2.6.5 1.3.9 2 1.4.1.1.2.1.2.2 1 1.8 2.8 2.8 4.2 4.2 2.2 2.4 4.8 4.4 7.2 6.7 1.1 1 2.1 2.1 3.2 3.1.8.8 1.7 1.4 2.6 2.1 1.3 1.1 2.4 2.2 3.8 3.1 1 .7 2.1 1.2 3.1 1.9 1.7 1.1 3.4 2.2 5.1 3.2.6.4 1.3.6 2 .9 1.5.5 2.8 1.3 3.3 2.8.2.4.2.9.4 1.4v1.2c-.1.2-.3.4-.3.7-.2.9-.4 1.9-1.1 2.5-1 .8-2 1.7-3.4 1.7-.1 0-.2.1-.3.2-1.5.2-3 .2-4.4.2z'/%3E%3C/svg%3E");
-        }
-
-        &::after {
-          background-image: url("data:image/svg+xml,%3Csvg enable-background='new 0 0 64 64' height='64' viewBox='0 0 64 64' width='64' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%2326f' d='m55.1 10.9c-.1.3-.2.6-.3 1-.2.5-.4.8-.9 1.1-.7.5-1.2 1.2-1.7 1.9-.9 1.1-1.6 2.3-2.5 3.4-.7.7-1.5 1.2-2.3 1.7-.6.5-1.4.8-2 1.3-.5.3-.8.8-1.2 1.2-1.1 1.2-2.2 2.3-3.2 3.5-.8.8-1.5 1.7-2.2 2.6-1 1.1-2 2.3-2.8 3.5-1.2 1.7-2.5 3.2-3.9 4.7-1 1.1-1.7 2.3-2.6 3.5-.7.9-1.4 1.8-2.1 2.7-.7 1-1.4 2-2.1 3-.5.8-1.3 1.5-1.6 2.3-.6 1.4-1.6 2.4-2.9 3.3-.3.2-.5.7-.8 1-.2.2-.2.5-.4.7-1.5 1-2.9 2-4.8 2.1-1.2.1-2.4.2-3.7.4-.1 0-.1.1-.2.2-.2 0-.4 0-.7 0-.1-.1-.2-.1-.3-.2-1.1-.3-2.2-.7-2.8-1.8-.3-.6-.6-1.3-.9-1.9 0-.3 0-.7 0-1 .8-.3 1.3-.8 1.5-1.7 0-.2.2-.4.4-.5.8-.6 1.6-1.1 2.3-1.6 1.1-.9 2.1-1.8 3.2-2.7.5-.4.9-.9 1.4-1.4.1-.1.1-.2.2-.2.8-1.3 1.7-2.6 2.6-3.9.7-1 1.6-1.9 2.3-2.8 1.1-1.5 2.1-3 3.2-4.4s2.4-2.7 3.6-4.1c.8-.9 1.6-1.8 2.3-2.8 1.2-1.7 2.5-3.3 4.2-4.7.6-.5 1.1-1.3 1.6-1.9 1-1.1 2.3-2.1 3.1-3.3 1.2-1.9 3.2-2.8 4.8-4.1 1.2-.9 2.3-1.8 3.6-2.6 1-.6 1.9-1.4 3.3-1.1.5.1 1.1-.4 1.7-.6h.5c.9.2 1.4.7 1.8 1.5.3.6.8 1.1 1.2 1.7.1.3.1.7.1 1z'/%3E%3C/svg%3E");
-        }
-      }
-
-      input[type=radio]:checked + label {
-        &::before,
-        &::after {
-          animation-name: draw-in;
-        }
-      }
-
-      input:focus,
-      textarea:focus,
-      button:focus,
-      input[type=radio]:focus + label {
-        outline:none !important;
-        box-shadow:none !important;
-        // background-color: red;
-      }
-
-      textarea {
-        resize: none;
-        width: 100%;
-        height: 6em;
-        background-color: transparent;
-        background-image: url('/assets/textarea.svg');
-        background-repeat: repeat;
-        background-size: 2em;
-        border: 0 none;
-        margin-top: -0.5em;
-        padding: 0 0.25em;
-        font-family: 'homemade apple',script;
-        font-size: 1em;
-        line-height: 2em;
-        color: #26f;
-        text-align: center;
-        overflow: hidden;
-        display: block;
-        box-sizing: border-box;
-      }
-
-      label {
-        margin-right: 1em;
-
-        &:last-of-type {
-          margin-right: 0;
-        }
-      }
-
-      .page-turn {
-        cursor: pointer;
-        position: absolute;
-        width: 70%;
-        mix-blend-mode: soft-light;
-        right: 0;
-        bottom: 0;
-        transform: scale(0);
-        transform-origin: 100% 100%;
-        transition-property: transform;
-        transition-duration: 2s;
-        transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
-        transition-delay: 0s;
-
-        img {
-          display: block;
-          width: 100%;
-        }
-      }
-
-      @keyframes page-turn-tip-reveal {
-        from { opacity: 0; }
-        to   { opacity: 0.8; }
-      }
-
-      @keyframes page-turn-tip-hide {
-        from { opacity: 0.8; }
-        to   { opacity: 0; }
-      }
-
-      @keyframes page-turn-tip-breathe {
-        from { opacity: 0.2; }
-        to   { opacity: 0.8; }
-      }
-
-      .page-turn-tip {
-        position: absolute;
-        width: 100%;
-        bottom: 2em;
-        font-size: 0.875em;
-        text-align: center;
         opacity: 0;
-        animation-direction: normal, alternate-reverse;
-        animation-duration: 1s, 1s;
-        animation-iteration-count: 1, infinite;
-        animation-timing-function: ease, linear;
       }
+
+      &.shown {
+        animation-name: reveal-form-field;
+        animation-duration: 1s;
+        animation-timing-function: ease;
+        animation-fill-mode: forwards;
+      }
+    }
+
+    .error-message {
+      color: #f00;
+      height: 1em;
+      margin-top: 1em;
+      font-size: 0.875em;
+    }
+
+    .comment-field {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .input {
+      appearance: none;
+      width: 75%;
+      border-width: 0 0 0.03125em 0;
+      border-color: black;
+      border-style: dashed;
+      margin: 0.5em auto;
+      padding: 0;
+      font-family: 'IM Fell DW Pica', serif;
+      font-size: 1.25em;
+      font-style: italic;
+      font-weight: 700;
+      line-height: 2em;
+      color: #26f;
+      text-align: center;
+      display: block;
+      box-sizing: border-box;
+
+      &::placeholder {
+        font-family: 'IM Fell DW Pica SC', serif;
+        font-size: 0.675em;
+        font-style: normal;
+        font-weight: 400;
+        letter-spacing: 0.025em;
+        color: #000;
+      }
+    }
+
+    button {
+      width: 10em;
+      height: 3em;
+      margin: 1.5em auto 0 auto;
+      padding: 0;
+      border: 0 none;
+      background-color: transparent;
+      background-image: url('/assets/btn.svg');
+      background-position: 50% 50%;
+      background-repeat: no-repeat;
+      background-size: contain;
+      font-family: 'IM Fell DW Pica SC', serif;
+      font-size: 1em;
+      font-weight: 700;
+      //text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    input:focus,
+    textarea:focus,
+    button:focus,
+    input[type=radio]:focus + label {
+      outline:none !important;
+      box-shadow:none !important;
+      // background-color: red;
     }
   }
 
-  .spread {
-    &.active {
-      z-index: 3;
-
-      .page {
-        filter: none;
-      }
-
-      .page.left {
-        transform: rotateY(0deg);
-      }
-    }
-    &.active + .spread {
-      z-index: 2;
-    }
-    &.complete {
-      .page-turn-tip {
-        animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-        animation-delay: 1s, 2s;
-      }
-    }
-    &.active.complete {
-
-      .page-turn {
-        transform: scale(1);
-      }
-      .page.right {
-        clip-path: polygon(0% 0%, 100% 0%, 100% 86.75%, 63% 100%, 0% 100%);
-      }
-    }
-    &.passed {
-      z-index: 2;
-
-      .page.left {
-        transform: rotateY(0deg);
-      }
-      .page.right {
-        transform: rotateY(-180deg);
-      }
-    }
-  }
+  // .face {
+  //   &::before {
+  //     content: '';
+  //     position: absolute;
+  //     z-index: 0;
+  //     top: 0;
+  //     right: 0;
+  //     bottom: 0;
+  //     left: 0;
+  //     background-image: url('/assets/page-tl.svg'), url('/assets/page-tr.svg'), url('/assets/page-bl.svg'), url('/assets/page-br.svg');
+  //     background-position: 0 0, 100% 0, 0 100%, 100% 100%;
+  //     background-repeat: no-repeat;
+  //     background-size: 10vw;
+  //   }
+  // }
 }
 
 @media only screen and (max-width: 567px) {
 
+  .page .body-text {
+    margin: 1em 0;
+  }
+
   .book {
     height: 70vw;
-
-    .spread .page .body-text {
-      margin: 1em 0;
-    }
 
     .spread-login .page .body-text,
     .spread-thank-you .page .body-text {
       width: 70%;
     } 
   }
-
 }
+
 </style>
