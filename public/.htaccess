@@ -2,7 +2,7 @@ RewriteEngine On    # Turn on the rewriting engine
  
 RewriteRule ^guests/([0-9a-zA-Z_-]*)$ api.php?id=$1 [NC,L]
 
-AuthType Basic
-AuthName "Password Protected Area"
-AuthUserFile "/home/stevedia/public_html/jennandsteve/.htpasswd"
-Require valid-user
+#AuthType Basic
+#AuthName "Password Protected Area"
+#AuthUserFile "/home/stevedia/public_html/jennandsteve/.htpasswd"
+#Require valid-user

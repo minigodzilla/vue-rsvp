@@ -1,28 +1,39 @@
 <template>
-  <div class="thank-you" :class="{'shown' : (step == 2)}">Thank You</div>
-  <div class="card" id="card" :class="{'completed flipped' : (step == 2)}">
-    <div class="face front" v-on:click="cardFlip()">
+  <div class="tap-overlay" v-on:click="cameraZoomOut()"></div>
+  <div class="thank-you" :class="{'shown' : (step == 2)}">
+    <span class="thank">Thank</span>
+    <span class="you">You</span>
+  </div>
+  <div class="card" id="card" :class="{'completed flipped' : (step == 2)}" v-touch:swipe="swipeHandler">
+    <div class="face front" v-on:click="cardFlipToBack()">
       <img draggable="false" class="img img-photo" src="/assets/photo.jpg"/>
       <div class="caption">Save The Date</div>
     </div>
     <div class="face back">
-      <div class="left-side" v-on:click="cardFlip()">
+      <div class="left-side" v-on:click="cardFlipToFront()">
         <div class="small-caps" style="font-size: 1.25em;">Sunday, September 5, 2021</div>
-        <div class="italic" style="font-size: 0.8125em; letter-spacing: 0.0625em; margin-bottom: 1.5em;">For the wedding celebration of</div>
+        <div class="italic" style="font-size: 0.8125em; letter-spacing: 0.0625em; margin-bottom: 2em;">For the wedding celebration of</div>
         <img draggable="false" class="img img-logo" src="/assets/jenn-and-steve.svg"/>
-        <div class="small-caps" style="margin-top: 1.5em; text-transform: lowercase; letter-spacing: 0.125em;">Toronto, Ontario</div>
-        <div class="small-caps" style="text-transform: lowercase; letter-spacing: 0.125em;">Canada</div>
+        <div class="small-caps" style="margin-top: 2em; line-height: 1.25; text-transform: lowercase; letter-spacing: 0.125em;">Toronto, Ontario</div>
+        <div class="small-caps" style="line-height: 1.25; text-transform: lowercase; letter-spacing: 0.125em;">Canada</div>
       </div>
       <div class="right-side">
-        <div class="small-caps" style="letter-spacing: 0.03125em">Please register to receive updates.</div>
+        <div style="font-size: 0.8125em; letter-spacing: 0.03125em; line-height: 1;">Please register to receive updates.</div>
         <div class="name-field">
           <input class="input box" placeholder="Your Name" ref="name" type="text" id="name" v-model="guest.name"/>
         </div>
         <div class="email-field">
-          <input class="input box" placeholder="Your Email" ref="email" type="text" id="email" v-model="guest.email"/>
+          <input class="input box" placeholder="Your Email Address" ref="email" type="text" id="email" v-model="guest.email"/>
         </div>
         <div class="location-field">
-          <input class="input box" placeholder="Your Location" ref="location" type="text" id="location" v-model="guest.location" v-on:keyup.enter="submitGuest()"/>
+          <input class="input box" placeholder="Your Location" ref="location" id="location" v-model="guest.location"/>
+          <select class="select" v-model="guest.location">
+            <option disabled selected></option>
+            <option>Within Ontario</option>
+            <option>Within Canada</option>
+            <option>United States</option>
+            <option>International</option>
+          </select>
         </div>
         <div class="comment-field">
           <input class="input box" placeholder="Your Comment" ref="comment" type="comment" id="comment"/>
@@ -30,18 +41,9 @@
         <button class="btn" v-on:click="submitGuest()">
           Register
         </button>
-        <div style="color: red;">{{ this.errorMessage }}</div>
-        <!-- <img draggable="false" class="img img-small img-flourish" src="/assets/flourish-1.svg"/> -->
+        <div class="error-message small-caps">{{ this.errorMessage }}</div>
       </div>
     </div>
-    <!-- <div class="page left">
-      <img draggable="false" class="img img-photo" src="/assets/photo.jpg"/>
-      <div class="body-text">
-        Save the Date
-      </div>
-    </div>
-    <div class="page right">
-    </div> -->
   </div>
 </template>
 
@@ -58,25 +60,12 @@ export default {
   },
   mounted() {
     this.initialCamera();
-    //this.focusInput('name');
+    // this.focusInput('name');
   },
   methods: {
-    focusInput(i) {
-      this.$refs[i].focus();
-    },
-    prev(i) {
-      this.step--;
-      this.cameraPan();
-      if (i) {
-        this.focusInput(i);
-      }
-    },
-    next(i) {
+    next() {
       this.step++;
-      this.cameraPan();
-      if (i) {
-        this.focusInput(i);
-      }
+      this.cameraZoomOut();
     },
     initialState() {
       return {
@@ -85,7 +74,8 @@ export default {
         errorMessage: '',
         guest: {
           name: '',
-          email: ''
+          email: '',
+          location: ''
         }
       }
     },
@@ -95,6 +85,7 @@ export default {
     submitGuest() {
 
       const commentField = document.getElementById('comment');
+      const regex = /^([a-zA-Z0-9_.\-+])+@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 
       this.hasErrors = false;
       this.errorMessage = '';
@@ -109,7 +100,19 @@ export default {
 
       if (!this.guest.email) {
         this.hasErrors = true;
-        this.errorMessage = 'Please enter your email.';
+        this.errorMessage = 'Please enter your email address.';
+        return false;
+      }
+
+      if(!regex.test(this.guest.email)) {
+        this.hasErrors = true;
+        this.errorMessage = 'Please enter a valid email address.';
+        return false;
+      }
+
+      if (!this.guest.location) {
+        this.hasErrors = true;
+        this.errorMessage = 'Please tell us where you are located.';
         return false;
       }
 
@@ -118,6 +121,8 @@ export default {
         this.next();
         return false;
       }
+
+      // all errors checked, posting to API
 
       if(this.hasErrors == false) {
         axios.post(`${baseURL}`, this.guest)
@@ -129,30 +134,11 @@ export default {
           });
       }
 
-
-    },
-    cameraPan() {
-
-      const app = document.getElementById('app');
-
-      app.classList.remove('pan','right');
-      app.classList.add('zoom-out');
-
-      setTimeout(function() {
-        app.classList.remove('zoom-out');
-        app.classList.add('pan','left');
-      }, 2500);
- 
-      setTimeout(function() {
-        app.classList.remove('left');
-        app.classList.add('right');
-      }, 5000);
     },
     initialCamera() {
 
       const app = document.getElementById('app');
       const card = document.getElementById('card');
-
 
       setTimeout(function() {
         card.classList.add('presented');
@@ -164,6 +150,7 @@ export default {
 
 
       setTimeout(function() {
+        app.classList.remove('pointer-events-none');
         app.classList.add('pan','left');
       }, 5000);
  
@@ -173,12 +160,58 @@ export default {
       }, 10000);
  
     },
-    cardFlip() {
+    cameraZoomOut() {
 
+      const app = document.getElementById('app');
+
+      app.classList.remove('pan');
+
+    },
+    cameraPanRight() {
+
+      const app = document.getElementById('app');
+
+      app.classList.remove('left');
+      app.classList.add('pan','right');
+
+    },
+    cameraPanLeft() {
+
+      const app = document.getElementById('app');
+
+      app.classList.remove('right');
+      app.classList.add('pan','left');
+
+    },
+    cardFlipToFront() {
+
+      const app = document.getElementById('app');
       const card = document.getElementById('card');
 
-      card.classList.toggle('flipped');
+      app.classList.remove('pan');
+      card.classList.remove('flipped');
 
+    },
+    cardFlipToBack() {
+
+      const app = document.getElementById('app');
+      const card = document.getElementById('card');
+
+      app.classList.add('pan');
+      card.classList.add('flipped');
+
+    },
+    swipeHandler(direction) {
+
+      const app = document.getElementById('app');
+
+      if (direction == 'right') {
+        this.cameraPanLeft();
+      }
+
+      if (direction == 'left') {
+        this.cameraPanRight();
+      }
     }
   }
 };
@@ -186,14 +219,36 @@ export default {
 
 <style lang="scss">
 
+.pointer-events-none {
+  pointer-events: none;
+}
+
+.tap-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
 .thank-you {
   position: absolute;
   color: #bea684;
-  font-style: italic;
-  font-family: 'IM Fell Double Pica', serif;
-  font-size: 5em;
-  text-shadow: 0.5vw 0.325vw 1.5vw rgba(0,0,0,0.5);
+  font-family: 'Calamity Jane NF', serif;
+  font-size: 6em;
+  letter-spacing: -0.03125em;
+  line-height: 0.78125;
+  text-shadow: 0.03125em 0.03125em 0.0625em rgba(0,0,0,0.75);
   display: none;
+  user-select: none;
+
+  span {
+    display: block;
+
+    &.you {
+      margin-left: 0.78125em;
+    }
+  }
 
   &.shown {
     display: block;
@@ -201,12 +256,12 @@ export default {
 }
 
 .card {
-  perspective: 200vw;
+  perspective: 100em;
   position: relative;
-  width: 80vw;
-  height: 55vw;
+  width: 50em;
+  height: 32em;
   transition: transform 2s ease;
-  transform: translateY(150vw) rotate(-22.5deg);
+  transform: translateY(75em) rotate(-22.5deg);
 
   &.flipped {
 
@@ -223,10 +278,12 @@ export default {
 
   &.presented {
     transform: translateY(0) rotate(0);
+    transition: transform 1s ease;
   }
 
   &.completed {
-    transform: translateY(-150vw) rotate(+22.5deg);
+    transform: translateY(-75em) rotate(+22.5deg);
+    transition: transform 1s ease;
   }
 
   .face {
@@ -240,10 +297,10 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: start;
+    //justify-content: start;
     padding: 0.75em;
     transition: transform 2s ease;
-    box-shadow: 0.5vw 0.325vw 1.5vw rgba(0,0,0,0.5);
+    box-shadow: 0.125em 0.08125em 0.75em rgba(0,0,0,0.5);
 
     &.front {
       transform: rotateZ(-2deg) rotateX(0deg);
@@ -269,7 +326,7 @@ export default {
         #bea684 94%,
         #bea684 100%
         );
-      background-size: 8em 8em;
+      background-size: 10em 10em;
 
       &::before {
         content: '';
@@ -283,7 +340,7 @@ export default {
         background-image: url('/assets/stamp.jpg');
         background-repeat: no-repeat;
         background-position: 97% 5%;
-        background-size: 14em;
+        background-size: 12em;
       }
     }
 
@@ -300,10 +357,11 @@ export default {
     }
 
     .caption {
-      line-height: 2.875em;
-      font-family: 'IM Fell DW Pica SC', serif;
-      font-size: 1.5em;
-      letter-spacing: 0.125em;
+      line-height: 1.5em;
+      //font-family: 'IM Fell DW Pica SC', serif;
+      font-family: 'Calamity Jane NF',serif;
+      font-size: 2.5em;
+      word-spacing: -0.2em;
     }
 
     > div,
@@ -356,12 +414,9 @@ export default {
     .right-side {
       position: absolute;
       width: 50%;
-      top: 5em;
+      top: 9em;
       right: 0;
       bottom: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
       text-align: center;
 
       &.date-place {
@@ -387,9 +442,10 @@ export default {
 
     .error-message {
       color: #f00;
-      height: 1em;
+      position: absolute;
+      width: 100%;
       margin-top: 1em;
-      font-size: 0.875em;
+      mix-blend-mode: multiply;
     }
 
     .comment-field {
@@ -400,17 +456,17 @@ export default {
 
     .input {
       appearance: none;
-      width: 75%;
+      width: 70%;
+      border-radius: 0;
       border-width: 0 0 0.03125em 0;
       border-color: black;
       border-style: dashed;
-      margin: 0.5em auto;
+      margin: 1em auto;
       padding: 0;
       font-family: 'IM Fell DW Pica', serif;
-      font-size: 1.25em;
+      font-size: 1.5em;
       font-style: italic;
-      font-weight: 700;
-      line-height: 2em;
+      line-height: 1.25em;
       color: #26f;
       text-align: center;
       display: block;
@@ -418,7 +474,7 @@ export default {
 
       &::placeholder {
         font-family: 'IM Fell DW Pica SC', serif;
-        font-size: 0.675em;
+        font-size: 0.5em;
         font-style: normal;
         font-weight: 400;
         letter-spacing: 0.025em;
@@ -426,10 +482,31 @@ export default {
       }
     }
 
+    .location-field {
+      position: relative;
+
+      .input {
+        pointer-events: none;
+      }
+    }
+
+    .select,
+    .select:focus {
+      appearance: none;
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      font-size: 20px;
+    }
+
     button {
       width: 10em;
       height: 3em;
-      margin: 1.5em auto 0 auto;
+      margin: 1em auto 0 auto;
       padding: 0;
       border: 0 none;
       background-color: transparent;
@@ -439,7 +516,7 @@ export default {
       background-size: contain;
       font-family: 'IM Fell DW Pica SC', serif;
       font-size: 1em;
-      font-weight: 700;
+      //font-weight: 400;
       //text-transform: uppercase;
       cursor: pointer;
     }
@@ -473,17 +550,28 @@ export default {
 
 @media only screen and (max-width: 567px) {
 
-  .page .body-text {
-    margin: 1em 0;
+  .thank-you {
+    font-size: 16em;
   }
 
-  .book {
-    height: 70vw;
+  .card .face {
+    font-size: 1.25em;
 
-    .spread-login .page .body-text,
-    .spread-thank-you .page .body-text {
-      width: 70%;
-    } 
+    .img-photo {
+      height: 78%;
+    }
+    .caption {
+      font-size: 4em;
+    }
+    .right-side {
+      top: 7.875em;
+    }
+    .input {
+      width: 100%;
+      margin: 0.0625em auto;
+      font-size: 2em;
+      transform: scale(0.75);
+    }
   }
 }
 

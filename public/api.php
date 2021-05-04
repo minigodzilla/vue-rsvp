@@ -78,11 +78,11 @@ else if ($method === 'POST') {
 
 	$data = json_decode(file_get_contents("php://input"), true);
 
-	if ($data["name"]!="" && $data["email"]!="") {
+	if ($data["name"]!="" && $data["email"]!="" && $data["location"]!="") {
 
-		$sql = "INSERT INTO guestCollect (name, email) VALUES (?, ?)";
+		$sql = "INSERT INTO guestCollect (name, email, location) VALUES (?, ?, ?)";
 		$stmt = $conn->prepare($sql);
-		$stmt->bind_param("ss", $data["name"], $data["email"]);
+		$stmt->bind_param("sss", $data["name"], $data["email"], $data["location"]);
 
 		$stmt->execute();
 

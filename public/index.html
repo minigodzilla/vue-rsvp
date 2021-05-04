@@ -3,16 +3,38 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>favicon.png">
+    <title>Jenn and Steve's Wedding - Sunday, September 5, 2021</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="A design-focused, creative front end developer who makes beautiful websites and apps." />
+    <meta name="author" content="Steve Diabo" />
+
+    <!-- OG -->
+    <meta property="og:type"          content="website" />
+    <meta property="og:url"           content="https://jennandsteve.ca/" />
+    <meta property="og:site_name"     content="Jenn and Steve's Wedding" />
+    <meta property="og:title"         content="Jenn and Steve's Wedding" />
+    <meta property="og:description"   content="Happening Sunday, September 5, 2021!" />
+    <meta property="og:image"         content="https://jennandsteve.ca/assets/jennandsteve.jpg" />
+    <meta property="og:image:width"   content="1000" />
+    <meta property="og:image:height"  content="680"  />
+    <meta name="twitter:card"         content="summary" />
+    <meta name="twitter:url"          content="https://jennandsteve.ca/" />
+    <meta name="twitter:title"        content="Jenn and Steve's Wedding" />
+    <meta name="twitter:description"  content="Happening Sunday, September 5, 2021!" />
+    <meta name="twitter:image"        content="https://jennandsteve.ca/assets/jennandsteve.jpg" />
+    <meta name="twitter:image:width"  content="1000" />
+    <meta name="twitter:image:height" content="680"  />
+    <link rel="image_src" href="https://jennandsteve.ca/assets/jennandsteve.jpg" />
+
   </head>
   <body>
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div class="vignette"></div>
-    <div id="app"></div>
+    <div id="app" class="pointer-events-none"></div>
     <!-- built files will be auto injected -->
   </body>
 </html>
