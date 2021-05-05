@@ -1,16 +1,16 @@
 <template>
   <h1>Jenn and Steve's Wedding RSVP</h1>
-  <GuestCollector/>
+  <Camera/>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import GuestCollector from './components/GuestCollector.vue';
+import Camera from './components/Camera.vue';
 
 export default defineComponent({
   name: 'App',
   components: {
-    GuestCollector
+    Camera
   }
 });
 </script>
