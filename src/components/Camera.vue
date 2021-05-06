@@ -3,17 +3,19 @@
     <div id="player-container" class="player-container">
       <video id="player" controls autoplay></video>
     </div>
-    <div>
-      <button id="capture" v-on:click="takePicture()">Capture</button>
-    </div>
     <div id="gallery">
       <!-- <img id="photo" v-bind:src="photo" alt="The screen capture will appear in this box."> --> 
     </div>
   </div>
-  <canvas id="canvas" width=640 height=480></canvas>
+  <canvas id="canvas" width=200 height=150></canvas>
 </template>
 
 <script>
+import axios from "axios";
+
+const baseURL = 
+  process.env.NODE_ENV === 'development' ? '//localhost:3000/photos/' : 'photos/'
+
 export default {
   data() {
     return this.initialState();
@@ -36,7 +38,8 @@ export default {
         player: '',
         photo: '',
         canvas: '',
-        constraints: {}
+        constraints: {},
+
       }
     },
     takePicture() {
@@ -57,8 +60,16 @@ export default {
 
       img2.src = this.photo;
       img2.classList.add('photo')
-      gallery.appendChild(img2);
+      gallery.prepend(img2);
 
+
+      axios.post(`${baseURL}`, this.photo)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }
 };
@@ -130,7 +141,7 @@ export default {
     width: 100%;
     height: 100%;
     animation-name: flash, slide;
-    animation-duration: 1s;
+    animation-duration: 0.5s, 1s;
     animation-timing-function: ease;
     animation-fill-mode: both;
   }
@@ -140,9 +151,12 @@ canvas {
   display: none;
 }
 
-.gallery {
+#gallery {
   display: flex;
-  flex-wrap:wrap;
+  //flex-wrap:wrap;
+  width: 48em;
+  height: 9em;
+  overflow: hidden;
 }
 
 .photo {
