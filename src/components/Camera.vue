@@ -1,218 +1,486 @@
 <template>
-  <div class="camera">
-    <div id="player-container" class="player-container" v-on:click="takePicture()">
-      <video id="player" controls autoplay muted playsinline></video>
-    </div>
-    <div id="gallery">
-      <!-- <img id="photo" v-bind:src="photo" alt="The screen capture will appear in this box."> --> 
-    </div>
-    <div id="switch-cameras" v-on:click="changeCamera()">{{this.activeCam}}</div>
-  </div>
-  <canvas id="canvas" width="768" height="1024"></canvas>
+	<div id="camera" :class="[orientation]">
+		<div id="gallery"></div>
+		<div id="viewfinder" class="viewfinder">
+			<div id="sizing-box">
+				<video id="player" muted playsinline></video>
+			</div>
+		</div>
+		<div id="controls">
+			<div
+				class="button left"
+				id="set-timer"
+				v-on:click="this.timerEnabled = !this.timerEnabled"
+				v-bind:class="{ active: this.timerEnabled }"
+			>
+				Set Timer
+			</div>
+			<div class="button center" id="shutter" v-on:click="shutterHandler()">
+				Take Picture
+			</div>
+			<div class="button right" id="change-camera" v-on:click="changeCamera()">
+				Change Camera
+			</div>
+		</div>
+	</div>
+	<canvas id="canvas" width="768" height="1024"></canvas>
 </template>
 
-
 <style lang="scss">
+#camera {
+	height: 100%;
+	display: flex;
 
-  * {
-      box-sizing: border-box;
-  }
+	#viewfinder {
+		flex-grow: 1;
+		flex-shrink: 1;
+		position: relative;
+		z-index: 0;
+		overflow: hidden;
+		// padding: 5vw 5vw 0 5vw;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 
-  body {
-    margin: 0;
-  }
+		#sizing-box {
+			overflow: hidden;
+			position: relative;
+			width: 0;
+			height: 0;
+			border-radius: 0.25em;
+			box-shadow: 0.25em 0.25em 0.5em rgba(0, 0, 0, 0.5);
 
-  .player-container {
-    margin: 0 auto;
-    position: relative;
-    overflow: hidden;
-    width: 100vw;
-    height: 133.33vw;
-    border: 5vw solid black;
-    background-color: black;
-  
-    &::before {
-      content: '';
-      position: absolute;
-      z-index: 2;
-      top: -0.125em;
-      right: -0.125em;
-      bottom: -0.125em;
-      left: -0.125em;
-      background-image: url('/assets/viewfinder-glass-portrait.png');
-      background-size: 100% 100%;
-    }
-  
-    &::after {
-      content: '';
-      position: absolute;
-      z-index: 2;
-      top: -0.125em;
-      right: -0.125em;
-      bottom: -0.125em;
-      left: -0.125em;
-      background-image: url('/assets/viewfinder-vignette-portrait.png');
-      background-size: 100% 100%;
-    }
-  
-    video {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  
-    @keyframes flash {
-      0% {
-        filter: brightness(10);
-      }
-      100% {
-        filter: brightness(1);
-      }
-    }
-  
-    @keyframes slide {
-      0% {
-        transform: translateX(0);
-      }
-      100% {
-        transform: translateX(100%);
-      }
-    }
-  
-    img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      animation-name: flash, slide;
-      animation-duration: 0.5s, 1s;
-      animation-timing-function: ease;
-      animation-fill-mode: both;
-    }
-  }
-  
-  canvas {
-    display: none;
-  }
-  
-  #gallery {
-    display: flex;
-    //flex-wrap:wrap;
-    width: 100vw;
-    height: 9em;
-    overflow: hidden;
-  }
-  
-  .photo {
-    width: 25vw;
-    height: 33.33vw;
-  }
+			&::before,
+			&::after {
+				content: "";
+				position: absolute;
+				z-index: 1;
+				width: 101%;
+				height: 101%;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				background-size: 100% 100%;
+			}
 
-  #switch-cameras {
-    position: absolute;
-    background-color: red;
-    bottom: 0;
-    right: 0;
-    width: 25vw;
-    height: 25vw;
-  }
-  
-  
-  </style>
+			video {
+				display: block;
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+
+			@keyframes flash {
+				0% {
+					filter: brightness(10);
+				}
+				100% {
+					filter: brightness(1);
+				}
+			}
+
+			@keyframes slide {
+				0% {
+					transform: translateX(0);
+				}
+				100% {
+					transform: translateX(100%);
+				}
+			}
+
+			.photo {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				animation-name: flash, slide;
+				animation-duration: 0.5s, 1s;
+				animation-timing-function: ease;
+				animation-fill-mode: both;
+			}
+		}
+	}
+
+	#gallery {
+		flex-grow: 0;
+		flex-shrink: 0;
+		display: flex;
+		align-items: stretch;
+		overflow: hidden;
+
+		.photo {
+			object-fit: cover;
+			flex-grow: 0;
+			flex-shrink: 0;
+			transform: scale(0.9);
+		}
+	}
+
+	#controls {
+		flex-grow: 0;
+		flex-shrink: 0;
+		display: flex;
+		align-items: stretch;
+		justify-content: space-around;
+		background-color: #151515;
+		background-image: url("/assets/leather.jpg");
+		background-position: 50% 50%;
+		background-size: 20em;
+		position: relative;
+
+		&::before {
+			content: "";
+			background-color: #202020;
+			position: absolute;
+			border-style: solid;
+			border-top-color: rgba(255, 255, 255, 0.0325);
+			border-right-color: rgba(0, 0, 0, 0.25);
+			border-bottom-color: rgba(0, 0, 0, 0.25);
+			border-left-color: rgba(255, 255, 255, 0.0325);
+		}
+
+		.button {
+			display: flex;
+			text-indent: -999px;
+			overflow: hidden;
+			background-position: 50% 50%;
+			background-size: 100% 100%;
+			background-repeat: no-repeat;
+		}
+
+		#set-timer.active {
+			background-color: rgba(255, 0, 0, 0.25);
+		}
+	}
+
+	&.portrait-primary {
+		flex-direction: column;
+
+		#viewfinder #sizing-box {
+			&::before {
+				background-image: url("/assets/viewfinder-glass-portrait.png");
+			}
+
+			&::after {
+				background-image: url("/assets/viewfinder-vignette-portrait.png");
+			}
+		}
+
+		#gallery {
+			height: 24vw;
+			padding: 1em 1em 0 1em;
+			overflow-x: auto;
+
+			.photo {
+				width: 16.66%;
+			}
+		}
+
+		#controls {
+			height: 6em;
+			margin-top: 1em;
+			padding: 1em;
+
+			&::before {
+				width: 100%;
+				height: 0.25em;
+				top: -0.25em;
+				left: 0;
+				border-width: 1px 0;
+			}
+
+			.button {
+				width: 4em;
+
+				&#set-timer {
+					background-image: url("/assets/set-timer-portrait.png");
+				}
+
+				&#shutter {
+					background-image: url("/assets/shutter-portrait.png");
+					transform: scale(1.125);
+				}
+
+				&#change-camera {
+					background-image: url("/assets/change-camera-portrait.png");
+				}
+			}
+		}
+	}
+
+	&.landscape-primary {
+		flex-direction: row;
+
+		#viewfinder #sizing-box {
+			&::before {
+				background-image: url("/assets/viewfinder-glass-landscape.png");
+			}
+
+			&::after {
+				background-image: url("/assets/viewfinder-vignette-landscape.png");
+			}
+		}
+
+		#gallery {
+			width: 25vh;
+			height: 100%;
+			padding: 1em 0 1em 1em;
+			flex-direction: column;
+			overflow-y: auto;
+
+			.photo {
+				height: 16.66%;
+			}
+		}
+
+		#controls {
+			width: 12em;
+			height: 100%;
+			margin-left: 1.125em;
+			padding: 0;
+			flex-direction: column;
+			justify-content: start;
+			background-image: url("/assets/bg-landscape-2.png"),
+				url("/assets/leather.jpg");
+			background-repeat: repeat-x, repeat;
+			background-position: 50% 0%, 50% 50%;
+			background-size: auto 27.5%, 20em;
+
+			&::before {
+				width: 0.25em;
+				height: 100%;
+				top: 0;
+				left: -0.25em;
+				border-width: 0 1px;
+			}
+
+			.button {
+				width: 5em;
+				height: 5em;
+				margin: 0 1.5em;
+			}
+
+			#shutter {
+				width: 5em;
+				background-image: url("/assets/shutter-landscape.png");
+				background-position: 50% 42.5%;
+				background-size: 100% auto;
+				order: 0;
+				height: 27.5%;
+				margin-left: auto;
+			}
+
+			#change-camera {
+				background-image: url("/assets/change-camera-landscape.png");
+				order: 1;
+				margin: 0.5em 0 0 1.5em;
+			}
+
+			#set-timer {
+				background-image: url("/assets/set-timer-landscape.png");
+				order: 2;
+				margin: auto 0 0.5em 1.5em;
+			}
+		}
+	}
+}
+
+#canvas {
+	display: none;
+}
+</style>
 
 <script>
 import axios from "axios";
 
-const baseURL = 
-  process.env.NODE_ENV === 'development' ? '//localhost:3000/photos/' : 'photos/'
+const baseURL =
+	process.env.NODE_ENV === "development"
+		? "//localhost:3000/photos/"
+		: "photos/";
 
 export default {
-  data() {
-    return this.initialState();
-  },
-  mounted() {
-    this.activeCam = "environment";
-    this.player = document.getElementById('player');
-    this.canvas = document.getElementById('canvas');
-    this.constraints = {
-      video: { facingMode: this.activeCam },
-    };
-    this.initializeCamera();
-    //navigator.mediaDevices.enumerateDevices()
-    // .then((devices) => {
-    //   devices.forEach(function(device) {
-    //     console.log(device.kind + ": " + device.label +
-    //                 " id = " + device.deviceId);
-    //   });
-    // })
-    // .catch((err)  => {
-    //   console.log(err.name + ": " + err.message);
-    // });
-  },
-  methods: {
-    initialState() {
-      return {
+	data() {
+		return this.initialState();
+	},
+	mounted() {
+		this.player = document.getElementById("player");
+		this.canvas = document.getElementById("canvas");
+		this.constraints = {
+			video: { deviceId: this.activeCameraID },
+		};
 
-        player: '',
-        photo: '',
-        canvas: '',
-        constraints: {},
+		this.getCameras();
+		this.dynamicResize();
 
-      }
-    },
-    initializeCamera() {
-      navigator.mediaDevices.getUserMedia(this.constraints)
-        .then((stream) => {
-          this.player.srcObject = stream;
-        })
-        .catch((err)  => {
-          console.log(err.name + ": " + err.message);
-        });
-    },
-    changeCamera() {
-      if ( this.activeCam === "environment") {
-        console.log('condition 1');
-        this.activeCam = "user";
-      }
-      else {
-        console.log('condition 2');
-        this.activeCam = "environment";
-      }
-      console.log(this.activeCam);
-      this.initializeCamera();
-    },
-    takePicture() {
+		window.addEventListener("resize", this.resizeHandler);
 
-      const context = this.canvas.getContext('2d');
-      context.drawImage(this.player, 0, 0, this.canvas.width, this.canvas.height);
+		setInterval(() => {
+			if (this.resized == "yes") {
+				this.dynamicResize();
+			}
+		}, 500);
+	},
+	methods: {
+		initialState() {
+			return {
+				resized: "no",
+				orientation: "portrait-primary",
+				cameras: [],
+				facingMode: "environment",
+				activeCameraID: "",
+				activeCameraIndex: 0,
+				photo: "",
+				context: "",
+				constraints: {
+					facingMode: this.facingMode,
+				},
+				timerEnabled: false,
+			};
+		},
+		resizeHandler() {
+			this.resized = "yes";
+		},
+		dynamicResize() {
+			// orientation check
+			if (window.innerWidth < 568) {
+				this.orientation = "portrait-primary";
+				this.canvas.setAttribute("width", 768);
+				this.canvas.setAttribute("height", 1024);
+			} else {
+				this.orientation = "landscape-primary";
+				this.canvas.setAttribute("width", 1024);
+				this.canvas.setAttribute("height", 768);
+			}
+			setTimeout(() => {
+				// viewfinder resizing
+				const vf = document.getElementById("viewfinder");
+				const sb = document.getElementById("sizing-box");
+				const vfW = vf.clientWidth - 32;
+				const vfH = vf.clientHeight - 32;
+				if (this.orientation == "portrait-primary") {
+					console.log("portrait");
+					// 3:4 (portrait)
+					if ((vfH / 4) * 3 > vfW) {
+						sb.style.height = (vfW / 3) * 4 + "px";
+						sb.style.width = vfW + "px";
+					} else {
+						sb.style.height = vfH + "px";
+						sb.style.width = (vfH / 4) * 3 + "px";
+					}
+				} else if (this.orientation == "landscape-primary") {
+					console.log("landscape");
+					if ((vfH / 3) * 4 > vfW) {
+						sb.style.height = (vfW / 4) * 3 + "px";
+						sb.style.width = vfW + "px";
+					} else {
+						sb.style.height = vfH + "px";
+						sb.style.width = (vfH / 3) * 4 + "px";
+					}
+				}
+			}, 250);
+			// reset
+			this.resized = "no";
+		},
+		getCameras() {
+			navigator.mediaDevices
+				.enumerateDevices()
+				.then((devices) => {
+					devices.forEach((device) => {
+						if (
+							device.kind == "videoinput" &&
+							device.label != "OM-D WebCam Beta (D_We:bCam)"
+						) {
+							// console.log(device.label);
+							this.cameras.push(device.deviceId);
+						}
+					});
+					this.activeCameraID = this.cameras[this.activeCameraIndex];
+					this.initializeCamera();
+				})
+				.catch((err) => {
+					console.log(err.name + ": " + err.message);
+				});
+		},
+		initializeCamera() {
+			if (this.activeCameraID.length) {
+				this.constraints = {
+					video: {
+						deviceId: this.activeCameraID,
+					},
+				};
+			} else {
+				this.constraints = {
+					video: {
+						facingMode: this.facingMode,
+					},
+				};
+			}
+			navigator.mediaDevices
+				.getUserMedia(this.constraints)
+				.then((stream) => {
+					this.player.srcObject = stream;
+					this.player.play();
+				})
+				.catch((err) => {
+					console.log(err.name + ": " + err.message);
+				});
+		},
+		changeCamera() {
+			if (this.activeCameraID.length) {
+				this.activeCameraIndex++;
+				this.activeCameraIndex = this.activeCameraIndex % this.cameras.length;
+				this.activeCameraID = this.cameras[this.activeCameraIndex];
+			} else {
+				if (this.facingMode == "environment") {
+					this.facingMode = "user";
+				} else {
+					this.facingMode = "environment";
+				}
+			}
+			this.initializeCamera();
+		},
+		takePicture() {
+			const context = this.canvas.getContext("2d");
+			context.drawImage(
+				this.player,
+				0,
+				0,
+				this.canvas.width,
+				this.canvas.height
+			);
 
-      this.photo = this.canvas.toDataURL('image/jpeg', 0.5);
+			this.photo = this.canvas.toDataURL("image/jpeg", 0.5);
 
-      const container = document.getElementById('player-container');
-      const gallery = document.getElementById('gallery');
-      const img = document.createElement('img');
-      const img2 = document.createElement('img');
+			const container = document.getElementById("sizing-box");
+			const gallery = document.getElementById("gallery");
+			const img = document.createElement("img");
+			const img2 = document.createElement("img");
 
-      img.src = this.photo;
-      img.classList.add('photo')
-      container.appendChild(img);
+			img.src = this.photo;
+			img.classList.add("photo");
+			container.appendChild(img);
 
-      img2.src = this.photo;
-      img2.classList.add('photo')
-      gallery.prepend(img2);
+			img2.src = this.photo;
+			img2.classList.add("photo");
+			gallery.prepend(img2);
 
-
-      axios.post(`${baseURL}`, this.photo)
-        .then(response => {
-          console.log(response);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
-  }
+			axios
+				.post(`${baseURL}`, this.photo)
+				.then((response) => {
+					console.log(response);
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		},
+		shutterHandler() {
+			if (this.timerEnabled) {
+				setTimeout(() => this.takePicture(), 5000);
+			} else {
+				this.takePicture();
+			}
+		},
+	},
 };
 </script>
-

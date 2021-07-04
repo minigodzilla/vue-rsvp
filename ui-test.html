@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+    <title>Jenn and Steve's Wedding - Sunday, September 5, 2021</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <style type="text/css">
+        html {
+            height: 100%;
+        }
+        body {
+            margin: 0;
+            background-color: black;
+            color: #fff;
+            height: 100%;
+        }
+        #app {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        #viewfinder {
+            flex-grow: 1;
+            flex-shrink: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        #video {
+            width: 300px;
+            height: 400px;
+            background: blue;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+        }
+        #gallery {
+            height: 5em;
+            flex-shrink: 0;
+            background-color: #880088;
+        }
+        #controls {
+            height: 5em;
+            background-color: #333;
+            flex-shrink: 0;
+        }
+    </style>
+    <script>
+        $(function() {
+
+            var resized = false;
+            var viewfinder = document.getElementById('viewfinder');
+            var viewfinderWidth = viewfinder.clientWidth;
+            var viewfinderHeight = viewfinder.clientHeight;
+            var video = document.getElementById('video');
+
+            function dynamicResizeAction() {
+                viewfinderWidth = viewfinder.clientWidth - 40;
+                viewfinderHeight = viewfinder.clientHeight - 40;
+                if ((viewfinderHeight / 4 * 3) > viewfinderWidth) {
+                    video.style.height = (viewfinderWidth / 3 * 4) + "px";
+                    video.style.width = (viewfinderWidth) + "px";
+                } else {
+                    video.style.height = (viewfinderHeight) + "px";
+                    video.style.width = (viewfinderHeight / 4 * 3) + "px";
+                }
+                console.log('current viewfinder height: ' + viewfinderHeight + 'px');
+            }
+
+            dynamicResizeAction();
+
+            $(window).on('resize', function() {
+                resized = true;
+            });
+
+            setInterval(function() {
+                if (resized) {
+                    dynamicResizeAction();
+                    resized = false;
+                }
+            }, 500);
+
+        });   
+    </script>
+</head>
+<body>
+    <div id="app">
+        <div id="viewfinder">
+            <div id="sizing-box">
+                <div id="video"></div>
+            </div>
+        </div>
+        <div id="gallery"></div>
+        <div id="controls">
+            <div class="button set-timer">Set Timer</div>
+            <div class="button take-picture">Take Picture</div>
+            <div class="button change-camera">Change Camera</div>
+        </div>
+    </div>
+</body>
+</html>
