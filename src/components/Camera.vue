@@ -1,7 +1,7 @@
 <template>
 	<div id="camera" :class="[orientation]">
-		<div id="gallery"></div>
 		<div id="viewfinder" class="viewfinder">
+			<div id="gallery"></div>
 			<div id="sizing-box">
 				<video id="player" muted playsinline></video>
 			</div>
@@ -37,68 +37,67 @@
 		position: relative;
 		z-index: 0;
 		overflow: hidden;
-		// padding: 5vw 5vw 0 5vw;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
 
-		#sizing-box {
-			overflow: hidden;
-			position: relative;
-			width: 0;
-			height: 0;
-			border-radius: 0.25em;
-			box-shadow: 0.25em 0.25em 0.5em rgba(0, 0, 0, 0.5);
+	#sizing-box {
+		overflow: hidden;
+		position: relative;
+		width: 0;
+		height: 0;
+		border-radius: 0.25em;
+		box-shadow: 0.25em 0.25em 0.5em rgba(0, 0, 0, 0.5);
 
-			&::before,
-			&::after {
-				content: "";
-				position: absolute;
-				z-index: 1;
-				width: 101%;
-				height: 101%;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				background-size: 100% 100%;
+		&::before,
+		&::after {
+			content: "";
+			position: absolute;
+			z-index: 1;
+			width: 101%;
+			height: 101%;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background-size: 100% 100%;
+		}
+
+		video {
+			display: block;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		@keyframes flash {
+			0% {
+				filter: brightness(10);
 			}
-
-			video {
-				display: block;
-				width: 100%;
-				height: 100%;
-				object-fit: cover;
+			100% {
+				filter: brightness(1);
 			}
+		}
 
-			@keyframes flash {
-				0% {
-					filter: brightness(10);
-				}
-				100% {
-					filter: brightness(1);
-				}
+		@keyframes slide {
+			0% {
+				transform: translateX(0);
 			}
+			100% {
+				transform: translateX(-100%);
+			}
+		}
 
-			@keyframes slide {
-				0% {
-					transform: translateX(0);
-				}
-				100% {
-					transform: translateX(100%);
-				}
-			}
-
-			.photo {
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				animation-name: flash, slide;
-				animation-duration: 0.5s, 1s;
-				animation-timing-function: ease;
-				animation-fill-mode: both;
-			}
+		.photo {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			animation-name: flash, slide;
+			animation-duration: 0.5s, 1s;
+			animation-timing-function: ease;
+			animation-fill-mode: both;
 		}
 	}
 
@@ -108,12 +107,17 @@
 		display: flex;
 		align-items: stretch;
 		overflow: hidden;
+		padding: 1em;
 
 		.photo {
 			object-fit: cover;
 			flex-grow: 0;
 			flex-shrink: 0;
 			transform: scale(0.9);
+			animation-name: flash;
+			animation-duration: 0.5s;
+			animation-timing-function: ease;
+			animation-fill-mode: both;
 		}
 	}
 
@@ -157,19 +161,22 @@
 	&.portrait-primary {
 		flex-direction: column;
 
-		#viewfinder #sizing-box {
-			&::before {
-				background-image: url("/assets/viewfinder-glass-portrait.png");
-			}
+		#viewfinder {
+			flex-direction: column;
 
-			&::after {
-				background-image: url("/assets/viewfinder-vignette-portrait.png");
+			#sizing-box {
+				&::before {
+					background-image: url("/assets/viewfinder-glass-portrait.png");
+				}
+
+				&::after {
+					background-image: url("/assets/viewfinder-vignette-portrait.png");
+				}
 			}
 		}
 
 		#gallery {
-			height: 24vw;
-			padding: 1em 1em 0 1em;
+			height: 28vw;
 			overflow-x: auto;
 
 			.photo {
@@ -212,20 +219,23 @@
 	&.landscape-primary {
 		flex-direction: row;
 
-		#viewfinder #sizing-box {
-			&::before {
-				background-image: url("/assets/viewfinder-glass-landscape.png");
-			}
+		#viewfinder {
+			flex-direction: row;
 
-			&::after {
-				background-image: url("/assets/viewfinder-vignette-landscape.png");
+			#sizing-box {
+				&::before {
+					background-image: url("/assets/viewfinder-glass-landscape.png");
+				}
+
+				&::after {
+					background-image: url("/assets/viewfinder-vignette-landscape.png");
+				}
 			}
 		}
 
 		#gallery {
-			width: 25vh;
+			width: 27.5vh;
 			height: 100%;
-			padding: 1em 0 1em 1em;
 			flex-direction: column;
 			overflow-y: auto;
 
@@ -356,29 +366,33 @@ export default {
 				// viewfinder resizing
 				const vf = document.getElementById("viewfinder");
 				const sb = document.getElementById("sizing-box");
+				const ga = document.getElementById("gallery");
 				const vfW = vf.clientWidth - 32;
 				const vfH = vf.clientHeight - 32;
+				const gaW = ga.clientWidth;
+				const gaH = ga.clientHeight;
 				if (this.orientation == "portrait-primary") {
-					console.log("portrait");
 					// 3:4 (portrait)
-					if ((vfH / 4) * 3 > vfW) {
-						sb.style.height = (vfW / 3) * 4 + "px";
-						sb.style.width = vfW + "px";
+					if ((vfW / 3) * 4 + gaH > vfH) {
+						// VF height is too narrow
+						sb.style.height = vfH - gaH + "px";
+						sb.style.width = ((vfH - gaH) / 4) * 3 + "px";
 					} else {
-						sb.style.height = vfH + "px";
-						sb.style.width = (vfH / 4) * 3 + "px";
+						sb.style.width = vfW + "px";
+						sb.style.height = (vfW / 3) * 4 + "px";
 					}
 				} else if (this.orientation == "landscape-primary") {
-					console.log("landscape");
-					if ((vfH / 3) * 4 > vfW) {
-						sb.style.height = (vfW / 4) * 3 + "px";
-						sb.style.width = vfW + "px";
+					// 4:3 (landscape)
+					if ((vfH / 3) * 4 + gaW > vfW) {
+						// VF width is too narrow
+						sb.style.width = vfW - gaW + "px";
+						sb.style.height = ((vfW - gaW) / 4) * 3 + "px";
 					} else {
-						sb.style.height = vfH + "px";
 						sb.style.width = (vfH / 3) * 4 + "px";
+						sb.style.height = vfH + "px";
 					}
 				}
-			}, 250);
+			}, 500);
 			// reset
 			this.resized = "no";
 		},
