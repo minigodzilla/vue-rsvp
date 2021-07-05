@@ -1,5 +1,5 @@
 <template>
-	<div id="camera" :class="[orientation]">
+	<div id="camera" :class="[orientation, simpleUserAgent]">
 		<div id="viewfinder" class="viewfinder">
 			<div id="gallery"></div>
 			<div id="sizing-box">
@@ -28,8 +28,9 @@
 
 <style lang="scss">
 #camera {
-	height: 100%;
 	display: flex;
+	user-select: none;
+	height: 100%;
 
 	#viewfinder {
 		flex-grow: 1;
@@ -47,8 +48,6 @@
 		position: relative;
 		width: 0;
 		height: 0;
-		border-radius: 0.25em;
-		box-shadow: 0.25em 0.25em 0.5em rgba(0, 0, 0, 0.5);
 
 		&::before,
 		&::after {
@@ -79,12 +78,21 @@
 			}
 		}
 
-		@keyframes slide {
+		@keyframes slide-left {
 			0% {
 				transform: translateX(0);
 			}
 			100% {
 				transform: translateX(-100%);
+			}
+		}
+
+		@keyframes slide-up {
+			0% {
+				transform: translateY(0);
+			}
+			100% {
+				transform: translateY(-100%);
 			}
 		}
 
@@ -94,7 +102,6 @@
 			left: 0;
 			width: 100%;
 			height: 100%;
-			animation-name: flash, slide;
 			animation-duration: 0.5s, 1s;
 			animation-timing-function: ease;
 			animation-fill-mode: both;
@@ -104,16 +111,23 @@
 	#gallery {
 		flex-grow: 0;
 		flex-shrink: 0;
+		align-self: stretch;
 		display: flex;
 		align-items: stretch;
 		overflow: hidden;
-		padding: 1em;
+		padding: 6.25vh 3.125vw;
 
 		.photo {
 			object-fit: cover;
 			flex-grow: 0;
 			flex-shrink: 0;
-			transform: scale(0.9);
+			mask-image: radial-gradient(
+				circle,
+				rgba(0, 0, 0, 0.8) 0%,
+				rgba(0, 0, 0, 0.8) 15%,
+				rgba(0, 0, 0, 0.5) 100%
+			);
+			transform: scale(0.85);
 			animation-name: flash;
 			animation-duration: 0.5s;
 			animation-timing-function: ease;
@@ -126,11 +140,11 @@
 		flex-shrink: 0;
 		display: flex;
 		align-items: stretch;
-		justify-content: space-around;
+		justify-content: space-between;
 		background-color: #151515;
 		background-image: url("/assets/leather.jpg");
 		background-position: 50% 50%;
-		background-size: 20em;
+		background-size: 50vh;
 		position: relative;
 
 		&::before {
@@ -165,6 +179,8 @@
 			flex-direction: column;
 
 			#sizing-box {
+				border-radius: 2vw;
+
 				&::before {
 					background-image: url("/assets/viewfinder-glass-portrait.png");
 				}
@@ -172,22 +188,28 @@
 				&::after {
 					background-image: url("/assets/viewfinder-vignette-portrait.png");
 				}
+
+				.photo {
+					animation-name: flash, slide-left;
+				}
 			}
 		}
 
 		#gallery {
-			height: 28vw;
+			height: 20vw;
+			padding: 6.25vw;
 			overflow-x: auto;
 
 			.photo {
 				width: 16.66%;
+				border-radius: 1vw;
 			}
 		}
 
 		#controls {
-			height: 6em;
-			margin-top: 1em;
-			padding: 1em;
+			height: 10vh;
+			margin-top: 6.25vw;
+			padding: 2.5vh;
 
 			&::before {
 				width: 100%;
@@ -198,7 +220,7 @@
 			}
 
 			.button {
-				width: 4em;
+				width: 10vh;
 
 				&#set-timer {
 					background-image: url("/assets/set-timer-portrait.png");
@@ -223,6 +245,8 @@
 			flex-direction: row;
 
 			#sizing-box {
+				border-radius: 2vh;
+
 				&::before {
 					background-image: url("/assets/viewfinder-glass-landscape.png");
 				}
@@ -230,32 +254,37 @@
 				&::after {
 					background-image: url("/assets/viewfinder-vignette-landscape.png");
 				}
+
+				.photo {
+					animation-name: flash, slide-left;
+				}
 			}
 		}
 
 		#gallery {
-			width: 27.5vh;
-			height: 100%;
+			width: 20vh;
+			padding: 6.25vh;
 			flex-direction: column;
 			overflow-y: auto;
 
 			.photo {
 				height: 16.66%;
+				border-radius: 1vh;
 			}
 		}
 
 		#controls {
-			width: 12em;
+			width: 25vw;
 			height: 100%;
-			margin-left: 1.125em;
+			margin-left: 6.25vh;
 			padding: 0;
 			flex-direction: column;
 			justify-content: start;
 			background-image: url("/assets/bg-landscape-2.png"),
 				url("/assets/leather.jpg");
 			background-repeat: repeat-x, repeat;
-			background-position: 50% 0%, 50% 50%;
-			background-size: auto 27.5%, 20em;
+			background-position: 50% 0%, 0% 27.5%;
+			background-size: auto 27.5%, 100vh;
 
 			&::before {
 				width: 0.25em;
@@ -266,13 +295,12 @@
 			}
 
 			.button {
-				width: 5em;
-				height: 5em;
-				margin: 0 1.5em;
+				width: 24vh;
+				height: 24vh;
+				margin: 0 3vw;
 			}
 
 			#shutter {
-				width: 5em;
 				background-image: url("/assets/shutter-landscape.png");
 				background-position: 50% 42.5%;
 				background-size: 100% auto;
@@ -284,16 +312,26 @@
 			#change-camera {
 				background-image: url("/assets/change-camera-landscape.png");
 				order: 1;
-				margin: 0.5em 0 0 1.5em;
+				margin: 1.5vw 0 0 3vw;
 			}
 
 			#set-timer {
 				background-image: url("/assets/set-timer-landscape.png");
 				order: 2;
-				margin: auto 0 0.5em 1.5em;
+				margin: auto 0 1.5vw 3vw;
 			}
 		}
 	}
+}
+
+// should target chrome only
+#camera.portrait-primary.not-chrome-ios,
+#camera.landscape-primary.not-chrome-ios {
+	height: 100vh;
+}
+#camera.portrait-primary.chrome-ios,
+#camera.landscape-primary.chrome-ios {
+	height: 100%;
 }
 
 #canvas {
@@ -314,12 +352,14 @@ export default {
 		return this.initialState();
 	},
 	mounted() {
+		this.userAgent = navigator.userAgent;
 		this.player = document.getElementById("player");
 		this.canvas = document.getElementById("canvas");
 		this.constraints = {
 			video: { deviceId: this.activeCameraID },
 		};
 
+		this.browserDetect();
 		this.getCameras();
 		this.dynamicResize();
 
@@ -334,6 +374,8 @@ export default {
 	methods: {
 		initialState() {
 			return {
+				userAgent: "",
+				simpleUserAgent: "not-chrome-ios",
 				resized: "no",
 				orientation: "portrait-primary",
 				cameras: [],
@@ -347,6 +389,13 @@ export default {
 				},
 				timerEnabled: false,
 			};
+		},
+		browserDetect() {
+			const isChrome = this.userAgent.toLowerCase().indexOf("crios") > -1;
+			if (isChrome) {
+				console.log("using chrome");
+				this.simpleUserAgent = "chrome-ios";
+			}
 		},
 		resizeHandler() {
 			this.resized = "yes";
@@ -367,12 +416,12 @@ export default {
 				const vf = document.getElementById("viewfinder");
 				const sb = document.getElementById("sizing-box");
 				const ga = document.getElementById("gallery");
-				const vfW = vf.clientWidth - 32;
-				const vfH = vf.clientHeight - 32;
 				const gaW = ga.clientWidth;
 				const gaH = ga.clientHeight;
 				if (this.orientation == "portrait-primary") {
 					// 3:4 (portrait)
+					const vfW = vf.clientWidth - vf.clientWidth / 8;
+					const vfH = vf.clientHeight;
 					if ((vfW / 3) * 4 + gaH > vfH) {
 						// VF height is too narrow
 						sb.style.height = vfH - gaH + "px";
@@ -383,6 +432,8 @@ export default {
 					}
 				} else if (this.orientation == "landscape-primary") {
 					// 4:3 (landscape)
+					const vfW = vf.clientWidth;
+					const vfH = vf.clientHeight - vf.clientHeight / 8;
 					if ((vfH / 3) * 4 + gaW > vfW) {
 						// VF width is too narrow
 						sb.style.width = vfW - gaW + "px";

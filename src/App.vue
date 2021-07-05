@@ -16,10 +16,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-* {
-	box-sizing: border-box;
-}
-
 html {
 	height: 100%;
 	overflow: hidden;
@@ -33,7 +29,6 @@ body {
 	max-height: -webkit-fill-available;
 	margin: 0;
 	padding: 0;
-	overflow: hidden;
 }
 
 .svg-defs {
