@@ -4,6 +4,11 @@
 			<div id="gallery"></div>
 			<div id="sizing-box">
 				<video id="player" muted playsinline></video>
+				<img
+					id="timer-display"
+					v-if="this.timerActive"
+					src="/assets/timer.gif"
+				/>
 			</div>
 		</div>
 		<div id="controls">
@@ -62,11 +67,19 @@
 			background-size: 100% 100%;
 		}
 
-		video {
+		#player {
 			display: block;
 			width: 100%;
 			height: 100%;
 			object-fit: cover;
+		}
+
+		#timer-display {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			opacity: 0.75;
 		}
 
 		@keyframes flash {
@@ -189,6 +202,10 @@
 					background-image: url("/assets/viewfinder-vignette-portrait.png");
 				}
 
+				#timer-display {
+					width: auto;
+					height: 18.5%;
+				}
 				.photo {
 					animation-name: flash, slide-left;
 				}
@@ -253,6 +270,11 @@
 
 				&::after {
 					background-image: url("/assets/viewfinder-vignette-landscape.png");
+				}
+
+				#timer-display {
+					width: 18.5%;
+					height: auto;
 				}
 
 				.photo {
@@ -325,7 +347,9 @@
 }
 
 // should target chrome only
-#camera.portrait-primary.not-chrome-ios,
+#camera.portrait-primary.not-chrome-ios {
+	height: 100%;
+}
 #camera.landscape-primary.not-chrome-ios {
 	height: 100vh;
 }
@@ -388,6 +412,7 @@ export default {
 					facingMode: this.facingMode,
 				},
 				timerEnabled: false,
+				timerActive: false,
 			};
 		},
 		browserDetect() {
@@ -515,6 +540,8 @@ export default {
 				this.canvas.height
 			);
 
+			this.timerActive = false;
+
 			this.photo = this.canvas.toDataURL("image/jpeg", 0.5);
 
 			const container = document.getElementById("sizing-box");
@@ -541,7 +568,10 @@ export default {
 		},
 		shutterHandler() {
 			if (this.timerEnabled) {
-				setTimeout(() => this.takePicture(), 5000);
+				if (!this.timerActive) {
+					this.timerActive = true;
+					setTimeout(() => this.takePicture(), 5000);
+				}
 			} else {
 				this.takePicture();
 			}
