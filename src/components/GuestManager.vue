@@ -90,7 +90,7 @@
 				<button class="page-turn" v-on:click="spreadWelcomeNext()">
 					<img draggable="false" src="/assets/page-turn.svg" />
 				</button>
-				<div class="page-turn-tip" v-on:click="next('guest-and-children')">Turn the page to continue.</div>
+				<div class="page-turn-tip" v-on:click="spreadWelcomeNext()">Turn the page to continue.</div>
 			</div>
 		</div>
 		<div class="spread spread-guest-and-children" :class="{ active: step == 2, complete: guest.hasOwnProperty('hasChildren') && guest.hasChildren != '', passed: step > 2 }">
@@ -118,10 +118,10 @@
 						<label for="has-children-two">Two</label>
 					</div>
 				</div>
-				<button class="page-turn" v-on:click="next('meal')">
+				<button class="page-turn" v-on:click="next()">
 					<img draggable="false" src="/assets/page-turn.svg" />
 				</button>
-				<div class="page-turn-tip" v-on:click="next('meal')">Turn the page to continue.</div>
+				<div class="page-turn-tip" v-on:click="next()">Turn the page to continue.</div>
 			</div>
 		</div>
 		<div class="spread spread-meal" :class="{ active: step == 3, complete: guest.hasOwnProperty('meal') && guest.meal != '', passed: step > 3 }">
@@ -130,7 +130,7 @@
 			</div>
 			<div class="page right">
 				<div class="body-text">
-					<h4>What is {{ guest.firstName }}'s meal preference?</h4>
+					<h4>What is your meal preference?</h4>
 					<div class="input-row">
 						<input type="radio" name="meal" value="veg" id="meal-veg" v-model="guest.meal" ref="meal" />
 						<label for="meal-veg">Vegetarian</label>
@@ -146,19 +146,19 @@
 						<textarea spellcheck="false" v-model="guest.dietaryNotes"></textarea>
 					</div>
 				</div>
-				<button class="page-turn" v-on:click="next('alcohol')">
+				<button class="page-turn" v-on:click="next()">
 					<img draggable="false" src="/assets/page-turn.svg" />
 				</button>
-				<div class="page-turn-tip" v-on:click="next('alcohol')">Turn the page to continue.</div>
+				<div class="page-turn-tip" v-on:click="next()">Turn the page to continue.</div>
 			</div>
 		</div>
 		<div class="spread spread-alcohol" :class="{ active: step == 4, complete: guest.hasOwnProperty('alcoholPref') && guest.alcoholPref != '', passed: step > 4 }">
-			<div class="page left" v-on:click="prev('meal')">
+			<div class="page left">
 				<img draggable="false" class="img img-full" src="/assets/pooh-1.jpg" />
 			</div>
 			<div class="page right">
 				<div class="body-text">
-					<h4>What is {{ guest.firstName }}'s preference for alcoholic drinks?</h4>
+					<h4>What is your preference for alcoholic drinks?</h4>
 					<div class="input-row">
 						<input type="radio" name="alcohol" value="none" id="alcohol-none" v-model="guest.alcoholPref" ref="alcohol" />
 						<label for="alcohol-none">None</label>
@@ -168,41 +168,27 @@
 						<label for="alcohol-wine">Wine</label>
 					</div>
 				</div>
-				<button class="page-turn" v-on:click="modifyGuest">
+				<button class="page-turn" v-on:click="spreadAlcoholNext()">
 					<img draggable="false" src="/assets/page-turn.svg" />
 				</button>
-				<div class="page-turn-tip" v-on:click="modifyGuest">Turn the page to continue.</div>
+				<div class="page-turn-tip" v-on:click="spreadAlcoholNext()">Turn the page to continue.</div>
 			</div>
 		</div>
-		<div class="spread spread-guest-name" :class="{ active: step == 5, complete: guest.hasOwnProperty('hasChildren') && guest.hasChildren != '', passed: step > 5 }">
+		<div class="spread spread-guest-name" :class="{ active: step == 5, complete: guest.hasOwnProperty('guestFirstName') && guest.guestFirstName != '', passed: step > 5 }">
 			<div class="page left">
 				<img draggable="false" class="img img-full" src="/assets/botany-1.jpg" />
 			</div>
 			<div class="page right">
 				<div class="body-text">
-					<h4>Will you be bringing a guest?</h4>
+					<h4>What is your guest's first name?</h4>
 					<div class="input-row">
-						<input type="radio" name="has-guest" value="no" id="has-guest-no" v-model="guest.hasGuest" ref="hasGuest" />
-						<label for="has-guest-no">No</label>
-						<input type="radio" name="has-guest" value="yes" id="has-guest-yes" v-model="guest.hasGuest" ref="hasGuest" />
-						<label for="has-guest-yes">Yes</label>
+						<input type="text" name="guest-first-name" id="guest-first-name" v-model="guest.guestFirstName" ref="guestFirstName" />
 					</div>
 				</div>
-				<div class="body-text" :class="{ hidden: guest.hasGuest === '', shown: guest.hasGuest != '' }">
-					<h4>Will you be bringing children?</h4>
-					<div class="input-row">
-						<input type="radio" name="has-children" value="no" id="has-children-no" v-model="guest.hasChildren" ref="hasChildren" />
-						<label for="has-children-no">None</label>
-						<input type="radio" name="has-children" value="one" id="has-children-one" v-model="guest.hasChildren" ref="hasChildren" />
-						<label for="has-children-one">One</label>
-						<input type="radio" name="has-children" value="two" id="has-children-two" v-model="guest.hasChildren" ref="hasChildren" />
-						<label for="has-children-two">Two</label>
-					</div>
-				</div>
-				<button class="page-turn" v-on:click="next('meal')">
+				<button class="page-turn" v-on:click="next()">
 					<img draggable="false" src="/assets/page-turn.svg" />
 				</button>
-				<div class="page-turn-tip" v-on:click="next('meal')">Turn the page to continue.</div>
+				<div class="page-turn-tip" v-on:click="next()">Turn the page to continue.</div>
 			</div>
 		</div>
 		<div class="spread spread-guest-meal" :class="{ active: step == 6, complete: guest.hasOwnProperty('guestMeal') && guest.guestMeal != '', passed: step > 6 }">
@@ -227,10 +213,10 @@
 						<textarea spellcheck="false" v-model="guest.dietaryNotes"></textarea>
 					</div>
 				</div>
-				<button class="page-turn" v-on:click="next('alcohol')">
+				<button class="page-turn" v-on:click="next()">
 					<img draggable="false" src="/assets/page-turn.svg" />
 				</button>
-				<div class="page-turn-tip" v-on:click="next('alcohol')">Turn the page to continue.</div>
+				<div class="page-turn-tip" v-on:click="next()">Turn the page to continue.</div>
 			</div>
 		</div>
 		<div class="spread spread-guest-alcohol" :class="{ active: step == 7, complete: guest.hasOwnProperty('guestAlcoholPref') && guest.guestAlcoholPref != '', passed: step > 7 }">
@@ -280,10 +266,10 @@
 						<label for="has-children-two">Two</label>
 					</div>
 				</div>
-				<button class="page-turn" v-on:click="next('meal')">
+				<button class="page-turn" v-on:click="next()">
 					<img draggable="false" src="/assets/page-turn.svg" />
 				</button>
-				<div class="page-turn-tip" v-on:click="next('meal')">Turn the page to continue.</div>
+				<div class="page-turn-tip" v-on:click="next()">Turn the page to continue.</div>
 			</div>
 		</div>
 		<div class="spread spread-child-1-meal" :class="{ active: step == 9, complete: guest.hasOwnProperty('child1Meal') && guest.child1Meal != '', passed: step > 9 }">
@@ -308,10 +294,10 @@
 						<textarea spellcheck="false" v-model="guest.dietaryNotes"></textarea>
 					</div>
 				</div>
-				<button class="page-turn" v-on:click="next('alcohol')">
+				<button class="page-turn" v-on:click="next()">
 					<img draggable="false" src="/assets/page-turn.svg" />
 				</button>
-				<div class="page-turn-tip" v-on:click="next('alcohol')">Turn the page to continue.</div>
+				<div class="page-turn-tip" v-on:click="next()">Turn the page to continue.</div>
 			</div>
 		</div>
 		<div class="spread spread-child-2-name" :class="{ active: step == 10, complete: guest.hasOwnProperty('child2FirstName') && guest.child2FirstName != '', passed: step > 10 }">
@@ -339,10 +325,10 @@
 						<label for="has-children-two">Two</label>
 					</div>
 				</div>
-				<button class="page-turn" v-on:click="next('meal')">
+				<button class="page-turn" v-on:click="next()">
 					<img draggable="false" src="/assets/page-turn.svg" />
 				</button>
-				<div class="page-turn-tip" v-on:click="next('meal')">Turn the page to continue.</div>
+				<div class="page-turn-tip" v-on:click="next()">Turn the page to continue.</div>
 			</div>
 		</div>
 		<div class="spread spread-child-2-meal" :class="{ active: step == 11, complete: guest.hasOwnProperty('child2Meal') && guest.child2Meal != '', passed: step > 11 }">
@@ -367,10 +353,10 @@
 						<textarea spellcheck="false" v-model="guest.dietaryNotes"></textarea>
 					</div>
 				</div>
-				<button class="page-turn" v-on:click="next('alcohol')">
+				<button class="page-turn" v-on:click="next()">
 					<img draggable="false" src="/assets/page-turn.svg" />
 				</button>
-				<div class="page-turn-tip" v-on:click="next('alcohol')">Turn the page to continue.</div>
+				<div class="page-turn-tip" v-on:click="next()">Turn the page to continue.</div>
 			</div>
 		</div>
 		<div class="spread spread-thank-you" :class="{ active: step == 12 }">
