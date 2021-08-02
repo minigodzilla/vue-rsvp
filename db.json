@@ -3,7 +3,7 @@
     {
       "id": "a1b2",
       "email": "stevediabo@hotmail.com",
-      "accepts": "",
+      "accepts": "no",
       "firstName": "Steve",
       "lastName": "Diabo",
       "meal": "",
@@ -28,7 +28,7 @@
     {
       "id": "c3d4",
       "email": "jy.jenn@gmail.com",
-      "accepts": "",
+      "accepts": "no",
       "firstName": "Jenn",
       "lastName": "Young",
       "meal": "",
@@ -50,5 +50,5 @@
       "child2Meal": "",
       "child2DietaryNotes": ""
     }
- ]
+  ]
 }

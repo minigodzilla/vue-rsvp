@@ -5,13 +5,14 @@
 				<img draggable="false" class="img img-small img-flourish" src="/assets/flourish-1.jpg" />
 				<div class="body-text">
 					<h4>Greetings {{ guest.firstName }}!</h4>
-					<p>Do you accept our invitation?</p>
+					<p>Can you attend our wedding celebration?</p>
 					<div class="input-row">
 						<input type="radio" name="accepts" value="yes" id="accepts-yes" v-model="guest.accepts" />
 						<label for="accepts-yes">Yes</label>
 						<input type="radio" name="accepts" value="no" id="accepts-no" v-model="guest.accepts" />
 						<label for="accepts-no">No</label>
 					</div>
+					<p style="font-size: 0.75em; line-height: 1.75"><strong>Sunday, September 5, 2021 at 4:30 PM</strong><br />Enoch Turner Schoolhouse Museum<br />106 Trinity Street, Toronto</p>
 				</div>
 				<img draggable="false" class="img img-small img-flourish" src="/assets/flourish-2.jpg" />
 				<button class="page-turn" v-on:click="spreadWelcomeNext()">
@@ -20,9 +21,9 @@
 				<div class="page-turn-tip" v-on:click="spreadWelcomeNext()">Turn the page to continue.</div>
 			</div>
 		</div>
-		<div class="step-2  spread spread-guest-and-children" :class="{ active: step == 2, complete: guest.hasOwnProperty('hasChildren') && guest.hasChildren != '', passed: step > 2 }">
+		<div class="step-2  spread spread-guest-and-children" v-if="guest.accepts == 'yes'" :class="{ active: step == 2, complete: guest.hasOwnProperty('hasChildren') && guest.hasChildren != '', passed: step > 2 }">
 			<div class="page left" v-on:click="prev()">
-				<img draggable="false" class="img img-full" src="/assets/botany-1.jpg" />
+				<img draggable="false" class="img img-full" src="/assets/guests-and-children.jpg" />
 			</div>
 			<div class="page right">
 				<div class="body-text">
@@ -51,7 +52,7 @@
 				<div class="page-turn-tip" v-on:click="next()">Turn the page to continue.</div>
 			</div>
 		</div>
-		<div class="step-3  spread spread-meal" :class="{ active: step == 3, complete: guest.hasOwnProperty('meal') && guest.meal != '', passed: step > 3 }">
+		<div class="step-3  spread spread-meal" v-if="guest.accepts == 'yes'" :class="{ active: step == 3, complete: guest.hasOwnProperty('meal') && guest.meal != '', passed: step > 3 }">
 			<div class="page left" v-on:click="prev()">
 				<img draggable="false" class="img img-full" src="/assets/beatrix-1.jpg" />
 			</div>
@@ -79,9 +80,9 @@
 				<div class="page-turn-tip" v-on:click="next()">Turn the page to continue.</div>
 			</div>
 		</div>
-		<div class="step-4  spread spread-alcohol" :class="{ active: step == 4, complete: guest.hasOwnProperty('alcoholPref') && guest.alcoholPref != '', passed: step > 4 }">
+		<div class="step-4  spread spread-alcohol" v-if="guest.accepts == 'yes'" :class="{ active: step == 4, complete: guest.hasOwnProperty('alcoholPref') && guest.alcoholPref != '', passed: step > 4 }">
 			<div class="page left" v-on:click="prev()">
-				<img draggable="false" class="img img-full" src="/assets/pooh-1.jpg" />
+				<img draggable="false" class="img img-full" src="/assets/alcohol.jpg" />
 			</div>
 			<div class="page right">
 				<div class="body-text">
@@ -103,7 +104,7 @@
 		</div>
 		<div class="step-5  spread spread-guest-name" v-if="guest.hasGuest == 'yes'" :class="{ active: step == 5, complete: guest.hasOwnProperty('guestFirstName') && guest.guestFirstName != '', passed: step > 5 }">
 			<div class="page left" v-on:click="prev()">
-				<img draggable="false" class="img img-full" src="/assets/botany-1.jpg" />
+				<img draggable="false" class="img img-full" src="/assets/guest-name.jpg" />
 			</div>
 			<div class="page right">
 				<div class="body-text">
@@ -126,7 +127,7 @@
 		</div>
 		<div class="step-6  spread spread-guest-meal" v-if="guest.hasGuest == 'yes'" :class="{ active: step == 6, complete: guest.hasOwnProperty('guestMeal') && guest.guestMeal != '', passed: step > 6 }">
 			<div class="page left" v-on:click="prev()">
-				<img draggable="false" class="img img-full" src="/assets/beatrix-1.jpg" />
+				<img draggable="false" class="img img-full" src="/assets/guest-meal.jpg" />
 			</div>
 			<div class="page right">
 				<div class="body-text">
@@ -154,7 +155,7 @@
 		</div>
 		<div class="step-7  spread spread-guest-alcohol" v-if="guest.hasGuest == 'yes'" :class="{ active: step == 7, complete: guest.hasOwnProperty('guestAlcoholPref') && guest.guestAlcoholPref != '', passed: step > 7 }">
 			<div class="page left" v-on:click="prev()">
-				<img draggable="false" class="img img-full" src="/assets/pooh-1.jpg" />
+				<img draggable="false" class="img img-full" src="/assets/guest-alcohol.jpg" />
 			</div>
 			<div class="page right">
 				<div class="body-text">
@@ -176,7 +177,7 @@
 		</div>
 		<div class="step-8  spread spread-child-1-name" v-if="guest.hasChildren == 'one' || guest.hasChildren == 'two'" :class="{ active: step == 8, complete: guest.hasOwnProperty('child1FirstName') && guest.child1FirstName != '', passed: step > 8 }">
 			<div class="page left" v-on:click="spreadChild1NamePrev()">
-				<img draggable="false" class="img img-full" src="/assets/botany-1.jpg" />
+				<img draggable="false" class="img img-full" src="/assets/child-1-name.jpg" />
 			</div>
 			<div class="page right">
 				<div class="body-text">
@@ -194,7 +195,7 @@
 		</div>
 		<div class="step-9  spread spread-child-1-meal" v-if="guest.hasChildren == 'one' || guest.hasChildren == 'two'" :class="{ active: step == 9, complete: guest.hasOwnProperty('child1Meal') && guest.child1Meal != '', passed: step > 9 }">
 			<div class="page left" v-on:click="prev()">
-				<img draggable="false" class="img img-full" src="/assets/beatrix-1.jpg" />
+				<img draggable="false" class="img img-full" src="/assets/child-1-meal.jpg" />
 			</div>
 			<div class="page right">
 				<div class="body-text">
@@ -225,7 +226,7 @@
 		</div>
 		<div class="step-10 spread spread-child-2-name" v-if="guest.hasChildren == 'two'" :class="{ active: step == 10, complete: guest.hasOwnProperty('child2FirstName') && guest.child2FirstName != '', passed: step > 10 }">
 			<div class="page left" v-on:click="prev()">
-				<img draggable="false" class="img img-full" src="/assets/botany-1.jpg" />
+				<img draggable="false" class="img img-full" src="/assets/child-2-name.jpg" />
 			</div>
 			<div class="page right">
 				<div class="body-text">
@@ -242,7 +243,7 @@
 		</div>
 		<div class="step-11 spread spread-child-2-meal" v-if="guest.hasChildren == 'two'" :class="{ active: step == 11, complete: guest.hasOwnProperty('child2Meal') && guest.child2Meal != '', passed: step > 11 }">
 			<div class="page left" v-on:click="prev()">
-				<img draggable="false" class="img img-full" src="/assets/beatrix-1.jpg" />
+				<img draggable="false" class="img img-full" src="/assets/child-2-meal.jpg" />
 			</div>
 			<div class="page right">
 				<div class="body-text">
@@ -273,7 +274,8 @@
 		</div>
 		<div class="step-12 spread spread-thank-you" :class="{ active: step == 12 }">
 			<div class="page left" v-on:click="spreadThankYouPrev()">
-				<img draggable="false" class="img img-full" src="/assets/birds.jpg" />
+				<img v-if="guest.accepts == 'yes'" draggable="false" class="img img-full" src="/assets/birds.jpg" />
+				<img v-else draggable="false" class="img img-full" src="/assets/cannot-attend.jpg" />
 			</div>
 			<div class="page right">
 				<img draggable="false" class="img img-small img-flourish" src="/assets/flourish-1.jpg" />
@@ -281,7 +283,11 @@
 					<h3>Thank you!</h3>
 					<p>We have your RSVP.</p>
 					<p>You may return at any time to make changes.</p>
-					<p>We can't wait to see you!</p>
+					<p v-if="guest.accepts == 'yes'">We can't wait to see you!</p>
+					<div v-else>
+						<p>We're sorry that you're unable to attend.</p>
+						<p>We can't wait to see you next time!</p>
+					</div>
 				</div>
 				<img draggable="false" class="img img-small img-flourish" src="/assets/flourish-2.jpg" />
 			</div>
@@ -391,6 +397,7 @@
 
 			button {
 				width: 25%;
+				margin: 0;
 				padding: 0;
 				border: 0 none;
 				background: transparent;
@@ -409,7 +416,7 @@
 
 			.img-full {
 				max-height: 85%;
-				max-width: 100%;
+				max-width: 90%;
 			}
 
 			@keyframes reveal-form-field {
@@ -490,6 +497,7 @@
 				width: 0;
 				height: 0;
 				margin: 0;
+				display: none;
 			}
 
 			label {
@@ -612,6 +620,7 @@
 				transition-duration: 2s;
 				transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
 				transition-delay: 0s;
+				pointer-events: none;
 
 				img {
 					display: block;
@@ -657,6 +666,7 @@
 				animation-duration: 1s, 1s;
 				animation-iteration-count: 1, infinite;
 				animation-timing-function: ease, linear;
+				pointer-events: none;
 			}
 		}
 	}
@@ -677,6 +687,10 @@
 			z-index: 2;
 		}
 		&.complete {
+			.page-turn,
+			.page-turn-tip {
+				pointer-events: all;
+			}
 			.page-turn-tip {
 				animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
 				animation-delay: 1s, 2s;
