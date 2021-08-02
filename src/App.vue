@@ -75,12 +75,12 @@ h1 {
 	}
 
 	#app {
-		font-size: 2.25vw;
+		font-size: 2vw;
 		transition: transform 2s cubic-bezier(0.645, 0.045, 0.355, 1);
 	}
 
 	#app.initial {
-		transform: scale(2) translateX(-22.5%);
+		transform: scale(2) translateX(-21%);
 	}
 
 	#app.zoom-out {
@@ -88,11 +88,11 @@ h1 {
 	}
 
 	#app.pan.left {
-		transform: scale(2) translateX(22.5%);
+		transform: scale(2) translateX(21%);
 	}
 
 	#app.pan.right {
-		transform: scale(2) translateX(-22.5%);
+		transform: scale(2) translateX(-21%);
 	}
 }
 </style>

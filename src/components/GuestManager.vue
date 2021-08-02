@@ -186,12 +186,6 @@
 						<input type="text" name="child-1-first-name" id="child-1-first-name" v-model="guest.child1FirstName" />
 					</div>
 				</div>
-				<div class="body-text" :class="{ hidden: guest.child1FirstName == '', shown: guest.child1FirstName != '' }">
-					<h4>What is their last name?</h4>
-					<div class="input-row">
-						<input type="text" name="child-1-last-name" id="child-1-last-name" v-model="guest.child1LastName" />
-					</div>
-				</div>
 				<button class="page-turn" v-on:click="next()">
 					<img draggable="false" src="/assets/page-turn.svg" />
 				</button>
@@ -207,11 +201,9 @@
 					<h4>What is {{ guest.child1FirstName }}'s meal preference?</h4>
 					<div class="input-row">
 						<input type="radio" name="child-1-meal" value="veg" id="child-1-meal-veg" v-model="guest.child1Meal" />
-						<label for="child-1-meal-veg">Veg</label>
-						<input type="radio" name="child-1-meal" value="beef" id="child-1-meal-beef" v-model="guest.child1Meal" />
-						<label for="child-1-meal-beef">Beef</label>
-						<input type="radio" name="child-1-meal" value="chicken" id="child-1-meal-chicken" v-model="guest.child1Meal" />
-						<label for="child-1-meal-chicken">Chicken</label>
+						<label for="child-1-meal-veg">Vegetarian</label>
+						<input type="radio" name="child-1-meal" value="non-veg" id="child-1-meal-non-veg" v-model="guest.child1Meal" />
+						<label for="child-1-meal-non-veg">Non-Vegetarian</label>
 						<input type="radio" name="child-1-meal" value="none" id="child-1-meal-none" v-model="guest.child1Meal" />
 						<label for="child-1-meal-none">Bringing our own</label>
 					</div>
@@ -242,12 +234,6 @@
 						<input type="text" name="child-2-first-name" id="child-2-first-name" v-model="guest.child2FirstName" />
 					</div>
 				</div>
-				<div class="body-text" :class="{ hidden: guest.child2FirstName == '', shown: guest.child2FirstName != '' }">
-					<h4>What is their last name?</h4>
-					<div class="input-row">
-						<input type="text" name="child-2-last-name" id="child-2-last-name" v-model="guest.child2LastName" />
-					</div>
-				</div>
 				<button class="page-turn" v-on:click="next()">
 					<img draggable="false" src="/assets/page-turn.svg" />
 				</button>
@@ -263,11 +249,9 @@
 					<h4>What is {{ guest.child2FirstName }}'s meal preference?</h4>
 					<div class="input-row">
 						<input type="radio" name="child-2-meal" value="veg" id="child-2-meal-veg" v-model="guest.child2Meal" />
-						<label for="child-2-meal-veg">Veg</label>
-						<input type="radio" name="child-2-meal" value="beef" id="child-2-meal-beef" v-model="guest.child2Meal" />
-						<label for="child-2-meal-beef">Beef</label>
-						<input type="radio" name="child-2-meal" value="chicken" id="child-2-meal-chicken" v-model="guest.child2Meal" />
-						<label for="child-2-meal-chicken">Chicken</label>
+						<label for="child-2-meal-veg">Vegetarian</label>
+						<input type="radio" name="child-2-meal" value="non-veg" id="child-2-meal-non-veg" v-model="guest.child2Meal" />
+						<label for="child-2-meal-non-veg">Non-Vegetarian</label>
 						<input type="radio" name="child-2-meal" value="none" id="child-2-meal-none" v-model="guest.child2Meal" />
 						<label for="child-2-meal-none">Bringing our own</label>
 					</div>
@@ -449,8 +433,18 @@
 				margin: 1em 0;
 
 				h4 {
-					margin-top: 1em;
+					margin-top: 0;
 					margin-bottom: 1em;
+				}
+
+				.input-row {
+					line-height: 1.75;
+				}
+
+				em {
+					display: block;
+					font-size: 0.75em;
+					line-height: 1.2;
 				}
 
 				&.hidden {
@@ -707,210 +701,22 @@
 			}
 		}
 	}
-
-	// &.show-1 {
-	//   .spread-1 {
-	//     z-index: 3;
-
-	//     .page {
-	//       filter: none;
-	//     }
-
-	//     .page.left {
-	//       transform: rotateY(0deg);
-	//     }
-	//   }
-	//   .spread-2 {
-	//     z-index: 2;
-	//   }
-	// }
-
-	// &.show-2 {
-	//   .spread-1 {
-	//     z-index: 2;
-
-	//     .page.left {
-	//       transform: rotateY(0deg);
-	//     }
-
-	//     .page.right {
-	//       transform: rotateY(-180deg);
-	//     }
-
-	//     .page-turn {
-	//       animation-name: page-turn-reveal, page-turn-breathe;
-	//     }
-
-	//     .page-turn-tip {
-	//       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-	//     }
-	//   }
-	//   .spread-2 {
-	//     z-index: 3;
-
-	//     .page { filter: none; }
-
-	//     .page.left {
-	//       transform: rotateY(0deg);
-	//     }
-
-	//     .page-turn {
-	//       animation-name: page-turn-reveal, page-turn-breathe;
-	//     }
-
-	//     .page-turn-tip {
-	//       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-	//     }
-	//   }
-	//   .spread-3 {
-	//     z-index: 2;
-
-	//     .page.right {
-	//       transform: rotateY(0deg);
-	//     }
-	//   }
-	// }
-
-	// &.show-3 {
-	//   .spread-1 {
-	//     z-index: 2;
-
-	//     .page.left {
-	//       transform: rotateY(0deg);
-	//     }
-
-	//     .page.right {
-	//       transform: rotateY(-180deg);
-	//     }
-
-	//     .page-turn {
-	//       animation-name: page-turn-reveal, page-turn-breathe;
-	//     }
-
-	//     .page-turn-tip {
-	//       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-	//     }
-	//   }
-	//   .spread-2 {
-	//     z-index: 2;
-
-	//     .page.left {
-	//       transform: rotateY(0deg);
-	//     }
-
-	//     .page.right {
-	//       transform: rotateY(-180deg);
-	//       clip-path: polygon(0% 0%, 100% 0%, 100% 86.5%, 64.5% 100%, 0% 100%);
-	//     }
-
-	//     .page-turn {
-	//       animation-name: page-turn-reveal, page-turn-breathe;
-	//     }
-
-	//     .page-turn-tip {
-	//       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-	//     }
-	//   }
-	//   .spread-3 {
-	//     z-index: 3;
-
-	//     .page { filter: none; }
-
-	//     .page.left {
-	//       transform: rotateY(0deg);
-	//     }
-
-	//     .page-turn {
-	//       animation-name: page-turn-reveal, page-turn-breathe;
-	//     }
-
-	//     .page-turn-tip {
-	//       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-	//     }
-	//   }
-	// }
-
-	// &.show-4 {
-	//   .spread-1 {
-	//     z-index: 2;
-
-	//     .page.left {
-	//       transform: rotateY(0deg);
-	//     }
-
-	//     .page.right {
-	//       transform: rotateY(-180deg);
-	//     }
-
-	//     .page-turn {
-	//       animation-name: page-turn-reveal, page-turn-breathe;
-	//     }
-
-	//     .page-turn-tip {
-	//       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-	//     }
-	//   }
-	//   .spread-2 {
-	//     z-index: 2;
-
-	//     .page.left {
-	//       transform: rotateY(0deg);
-	//     }
-
-	//     .page.right {
-	//       transform: rotateY(-180deg);
-	//     }
-
-	//     .page-turn {
-	//       animation-name: page-turn-reveal, page-turn-breathe;
-	//     }
-
-	//     .page-turn-tip {
-	//       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-	//     }
-	//   }
-	//   .spread-3 {
-	//     z-index: 2;
-
-	//     .page.left {
-	//       transform: rotateY(0deg);
-	//     }
-
-	//     .page.right {
-	//       transform: rotateY(-180deg);
-	//     }
-
-	//     .page-turn {
-	//       animation-name: page-turn-reveal, page-turn-breathe;
-	//     }
-
-	//     .page-turn-tip {
-	//       animation-name: page-turn-tip-reveal, page-turn-tip-breathe;
-	//     }
-	//   }
-	//   .spread-4 {
-	//     z-index: 3;
-
-	//     .page { filter: none; }
-
-	//     .page.left {
-	//       transform: rotateY(0deg);
-	//     }
-	//   }
-	// }
 }
 
 @media only screen and (max-width: 567px) {
 	.book {
-		height: 70vw;
+		height: 60vw;
 
-		.spread .page .body-text {
-			margin: 1em 0;
+		.spread.active.complete .page.right {
+			clip-path: polygon(0% 0%, 100% 0%, 100% 89.5%, 66% 100%, 0% 100%);
 		}
 
-		.spread-login .page .body-text,
-		.spread-thank-you .page .body-text {
-			width: 70%;
+		.spread .page .img-full {
+			max-width: 90%;
+		}
+
+		.spread .page .body-text {
+			width: 30vw;
 		}
 	}
 }
@@ -939,6 +745,7 @@ export default {
 			if (this.guest.accepts == 'yes') {
 				this.step = 2;
 			}
+			this.cameraPan();
 		},
 		spreadAlcoholNext() {
 			if (this.guest.hasGuest == 'no') {
@@ -951,6 +758,7 @@ export default {
 			if (this.guest.hasGuest == 'yes') {
 				this.step = 5;
 			}
+			this.cameraPan();
 		},
 		spreadGuestAlcoholNext() {
 			if (this.guest.hasChildren == 'no') {
@@ -958,6 +766,7 @@ export default {
 			} else {
 				this.step = 8;
 			}
+			this.cameraPan();
 		},
 		spreadChild1MealNext() {
 			if (this.guest.hasChildren != 'two') {
@@ -965,6 +774,7 @@ export default {
 			} else {
 				this.step = 10;
 			}
+			this.cameraPan();
 		},
 		spreadThankYouPrev() {
 			if (this.guest.accepts == 'yes') {
@@ -982,6 +792,7 @@ export default {
 			} else {
 				this.step = 1;
 			}
+			this.cameraPan();
 		},
 		spreadChild1NamePrev() {
 			if (this.guest.hasGuest == 'yes') {
@@ -989,9 +800,11 @@ export default {
 			} else {
 				this.step = 4;
 			}
+			this.cameraPan();
 		},
 		prev() {
 			this.step--;
+			this.cameraPan();
 		},
 		next() {
 			this.step++;
