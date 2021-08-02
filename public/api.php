@@ -25,7 +25,7 @@ if ($method === 'GET') {
 		
 		$sql = "SELECT * FROM guests WHERE id=?";
 		$stmt = $conn->prepare($sql); 
-		$stmt->bind_param("i", $id);
+		$stmt->bind_param("s", $id);
 		$stmt->execute();
 
 		$result = $stmt->get_result();
@@ -56,9 +56,33 @@ else if ($method === 'PUT') {
 
 	if ($data["id"]!="") {
 
-		$sql = "UPDATE guests SET email = ?, guest1FirstName = ?, guest1LastName = ?, guest1Meal = ?, guest1DietaryNotes = ?, guest1AlcoholPref = ? WHERE id=?";
+		$sql = "UPDATE guests SET email = ?, accepts = ?, firstName = ?, lastName = ?, meal = ?, dietaryNotes = ?, alcoholPref = ?, hasGuest = ?, guestFirstName = ?, guestLastName = ?, guestMeal = ?, guestDietaryNotes = ?, guestAlcoholPref = ?, hasChildren = ?, child1FirstName = ?, child1LastName = ?, child1Meal = ?, child1DietaryNotes = ?, child2FirstName = ?, child2LastName = ?, child2Meal = ?, child2DietaryNotes = ? WHERE id=?";
 		$stmt = $conn->prepare($sql);
-		$stmt->bind_param("ssssssi", $data["email"], $data["guest1FirstName"], $data["guest1LastName"], $data["guest1Meal"], $data["guest1DietaryNotes"], $data["guest1AlcoholPref"], $data["id"]);
+		$stmt->bind_param("sssssssssssssssssssssss", $data["email"], $data["accepts"], $data["firstName"], $data["lastName"], $data["meal"], $data["dietaryNotes"], $data["alcoholPref"], $data["hasGuest"], $data["guestFirstName"], $data["guestLastName"], $data["guestMeal"], $data["guestDietaryNotes"], $data["guestAlcoholPref"], $data["hasChildren"], $data["child1FirstName"], $data["child1LastName"], $data["child1Meal"], $data["child1DietaryNotes"], $data["child2FirstName"], $data["child2LastName"], $data["child2Meal"], $data["child2DietaryNotes"], $data["id"]);
+
+		$stmt->execute();
+
+		$stmt->close();
+
+		echo json_encode($data);
+
+	}
+	else {
+		http_response_code(400);
+	}
+}
+
+else if ($method === 'POST') {
+
+	header("Content-Type:application/json");
+
+	$data = json_decode(file_get_contents("php://input"), true);
+
+	if ($data["name"]!="" && $data["email"]!="" && $data["location"]!="") {
+
+		$sql = "INSERT INTO guestCollect (name, email, location) VALUES (?, ?, ?)";
+		$stmt = $conn->prepare($sql);
+		$stmt->bind_param("sss", $data["name"], $data["email"], $data["location"]);
 
 		$stmt->execute();
 
