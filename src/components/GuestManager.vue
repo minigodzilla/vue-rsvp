@@ -34,7 +34,7 @@
 						<label for="has-guest-yes">Yes</label>
 					</div>
 				</div>
-				<div class="body-text" :class="{ hidden: guest.hasGuest === '', shown: guest.hasGuest != '' }">
+				<div class="body-text" :class="{ hidden: guest.hasGuest == '', shown: guest.hasGuest != '' }">
 					<h4>Will you be bringing children?</h4>
 					<div class="input-row">
 						<input type="radio" name="has-children" value="no" id="has-children-no" v-model="guest.hasChildren" />
@@ -67,7 +67,7 @@
 						<label for="meal-chicken">Chicken</label>
 					</div>
 				</div>
-				<div class="body-text" :class="{ hidden: guest.meal === '', shown: guest.meal != '' }">
+				<div class="body-text" :class="{ hidden: guest.meal == '', shown: guest.meal != '' }">
 					<h4>Any dietary notes? (allergies, restrictions, etc.?)</h4>
 					<div class="input-row">
 						<textarea spellcheck="false" v-model="guest.dietaryNotes"></textarea>
@@ -101,7 +101,7 @@
 				<div class="page-turn-tip" v-on:click="spreadAlcoholNext()">Turn the page to continue.</div>
 			</div>
 		</div>
-		<div class="step-5  spread spread-guest-name" :class="{ active: step == 5, complete: guest.hasOwnProperty('guestFirstName') && guest.guestFirstName != '', passed: step > 5 }">
+		<div class="step-5  spread spread-guest-name" v-if="guest.hasGuest == 'yes'" :class="{ active: step == 5, complete: guest.hasOwnProperty('guestFirstName') && guest.guestFirstName != '', passed: step > 5 }">
 			<div class="page left" v-on:click="prev()">
 				<img draggable="false" class="img img-full" src="/assets/botany-1.jpg" />
 			</div>
@@ -112,13 +112,19 @@
 						<input type="text" name="guest-first-name" id="guest-first-name" v-model="guest.guestFirstName" />
 					</div>
 				</div>
+				<div class="body-text" :class="{ hidden: guest.guestFirstName == '', shown: guest.guestFirstName != '' }">
+					<h4>What is their last name?</h4>
+					<div class="input-row">
+						<input type="text" name="guest-last-name" id="guest-last-name" v-model="guest.guestLastName" />
+					</div>
+				</div>
 				<button class="page-turn" v-on:click="next()">
 					<img draggable="false" src="/assets/page-turn.svg" />
 				</button>
 				<div class="page-turn-tip" v-on:click="next()">Turn the page to continue.</div>
 			</div>
 		</div>
-		<div class="step-6  spread spread-guest-meal" :class="{ active: step == 6, complete: guest.hasOwnProperty('guestMeal') && guest.guestMeal != '', passed: step > 6 }">
+		<div class="step-6  spread spread-guest-meal" v-if="guest.hasGuest == 'yes'" :class="{ active: step == 6, complete: guest.hasOwnProperty('guestMeal') && guest.guestMeal != '', passed: step > 6 }">
 			<div class="page left" v-on:click="prev()">
 				<img draggable="false" class="img img-full" src="/assets/beatrix-1.jpg" />
 			</div>
@@ -134,7 +140,7 @@
 						<label for="guest-meal-chicken">Chicken</label>
 					</div>
 				</div>
-				<div class="body-text" :class="{ hidden: guest.guestMeal === '', shown: guest.guestMeal != '' }">
+				<div class="body-text" :class="{ hidden: guest.guestMeal == '', shown: guest.guestMeal != '' }">
 					<h4>Any dietary notes? (allergies, restrictions, etc.?)</h4>
 					<div class="input-row">
 						<textarea spellcheck="false" v-model="guest.guestDietaryNotes"></textarea>
@@ -146,7 +152,7 @@
 				<div class="page-turn-tip" v-on:click="next()">Turn the page to continue.</div>
 			</div>
 		</div>
-		<div class="step-7  spread spread-guest-alcohol" :class="{ active: step == 7, complete: guest.hasOwnProperty('guestAlcoholPref') && guest.guestAlcoholPref != '', passed: step > 7 }">
+		<div class="step-7  spread spread-guest-alcohol" v-if="guest.hasGuest == 'yes'" :class="{ active: step == 7, complete: guest.hasOwnProperty('guestAlcoholPref') && guest.guestAlcoholPref != '', passed: step > 7 }">
 			<div class="page left" v-on:click="prev()">
 				<img draggable="false" class="img img-full" src="/assets/pooh-1.jpg" />
 			</div>
@@ -168,7 +174,7 @@
 				<div class="page-turn-tip" v-on:click="spreadGuestAlcoholNext()">Turn the page to continue.</div>
 			</div>
 		</div>
-		<div class="step-8  spread spread-child-1-name" :class="{ active: step == 8, complete: guest.hasOwnProperty('child1FirstName') && guest.child1FirstName != '', passed: step > 8 }">
+		<div class="step-8  spread spread-child-1-name" v-if="guest.hasChildren == 'one' || guest.hasChildren == 'two'" :class="{ active: step == 8, complete: guest.hasOwnProperty('child1FirstName') && guest.child1FirstName != '', passed: step > 8 }">
 			<div class="page left" v-on:click="spreadChild1NamePrev()">
 				<img draggable="false" class="img img-full" src="/assets/botany-1.jpg" />
 			</div>
@@ -180,13 +186,19 @@
 						<input type="text" name="child-1-first-name" id="child-1-first-name" v-model="guest.child1FirstName" />
 					</div>
 				</div>
+				<div class="body-text" :class="{ hidden: guest.child1FirstName == '', shown: guest.child1FirstName != '' }">
+					<h4>What is their last name?</h4>
+					<div class="input-row">
+						<input type="text" name="child-1-last-name" id="child-1-last-name" v-model="guest.child1LastName" />
+					</div>
+				</div>
 				<button class="page-turn" v-on:click="next()">
 					<img draggable="false" src="/assets/page-turn.svg" />
 				</button>
 				<div class="page-turn-tip" v-on:click="next()">Turn the page to continue.</div>
 			</div>
 		</div>
-		<div class="step-9  spread spread-child-1-meal" :class="{ active: step == 9, complete: guest.hasOwnProperty('child1Meal') && guest.child1Meal != '', passed: step > 9 }">
+		<div class="step-9  spread spread-child-1-meal" v-if="guest.hasChildren == 'one' || guest.hasChildren == 'two'" :class="{ active: step == 9, complete: guest.hasOwnProperty('child1Meal') && guest.child1Meal != '', passed: step > 9 }">
 			<div class="page left" v-on:click="prev()">
 				<img draggable="false" class="img img-full" src="/assets/beatrix-1.jpg" />
 			</div>
@@ -204,8 +216,11 @@
 						<label for="child-1-meal-none">Bringing our own</label>
 					</div>
 				</div>
-				<div class="body-text" :class="{ hidden: guest.child1Meal === '', shown: guest.child1Meal != '' }">
+				<div class="body-text" :class="{ hidden: guest.child1Meal == '' || guest.child1Meal == 'none', shown: guest.child1Meal != '' && guest.child1Meal != 'none' }">
 					<h4>Any dietary notes? (allergies, restrictions, etc.?)</h4>
+					<p>
+						<em>Please write anything you need in here,<br />we'll take care of it!</em>
+					</p>
 					<div class="input-row">
 						<textarea spellcheck="false" v-model="guest.child1DietaryNotes"></textarea>
 					</div>
@@ -216,7 +231,7 @@
 				<div class="page-turn-tip" v-on:click="spreadChild1MealNext()">Turn the page to continue.</div>
 			</div>
 		</div>
-		<div class="step-10 spread spread-child-2-name" :class="{ active: step == 10, complete: guest.hasOwnProperty('child2FirstName') && guest.child2FirstName != '', passed: step > 10 }">
+		<div class="step-10 spread spread-child-2-name" v-if="guest.hasChildren == 'two'" :class="{ active: step == 10, complete: guest.hasOwnProperty('child2FirstName') && guest.child2FirstName != '', passed: step > 10 }">
 			<div class="page left" v-on:click="prev()">
 				<img draggable="false" class="img img-full" src="/assets/botany-1.jpg" />
 			</div>
@@ -227,13 +242,19 @@
 						<input type="text" name="child-2-first-name" id="child-2-first-name" v-model="guest.child2FirstName" />
 					</div>
 				</div>
+				<div class="body-text" :class="{ hidden: guest.child2FirstName == '', shown: guest.child2FirstName != '' }">
+					<h4>What is their last name?</h4>
+					<div class="input-row">
+						<input type="text" name="child-2-last-name" id="child-2-last-name" v-model="guest.child2LastName" />
+					</div>
+				</div>
 				<button class="page-turn" v-on:click="next()">
 					<img draggable="false" src="/assets/page-turn.svg" />
 				</button>
 				<div class="page-turn-tip" v-on:click="next()">Turn the page to continue.</div>
 			</div>
 		</div>
-		<div class="step-11 spread spread-child-2-meal" :class="{ active: step == 11, complete: guest.hasOwnProperty('child2Meal') && guest.child2Meal != '', passed: step > 11 }">
+		<div class="step-11 spread spread-child-2-meal" v-if="guest.hasChildren == 'two'" :class="{ active: step == 11, complete: guest.hasOwnProperty('child2Meal') && guest.child2Meal != '', passed: step > 11 }">
 			<div class="page left" v-on:click="prev()">
 				<img draggable="false" class="img img-full" src="/assets/beatrix-1.jpg" />
 			</div>
@@ -251,8 +272,11 @@
 						<label for="child-2-meal-none">Bringing our own</label>
 					</div>
 				</div>
-				<div class="body-text" :class="{ hidden: guest.child2Meal === '', shown: guest.child2Meal != '' }">
+				<div class="body-text" :class="{ hidden: guest.child2Meal == '' || guest.child2Meal == 'none', shown: guest.child2Meal != '' && guest.child2Meal != 'none' }">
 					<h4>Any dietary notes? (allergies, restrictions, etc.?)</h4>
+					<p>
+						<em>Please write anything you need in here,<br />we'll take care of it!</em>
+					</p>
 					<div class="input-row">
 						<textarea spellcheck="false" v-model="guest.child2DietaryNotes"></textarea>
 					</div>
@@ -406,15 +430,15 @@
 
 			@keyframes reveal-form-field {
 				0% {
-					height: 0;
+					max-height: 0;
 					opacity: 0;
 				}
 				50% {
-					height: 12em;
+					max-height: 12.5em;
 					opacity: 0;
 				}
 				100% {
-					height: 12em;
+					max-height: 12.5em;
 					opacity: 1;
 				}
 			}
@@ -529,6 +553,27 @@
 				outline: none !important;
 				box-shadow: none !important;
 				// background-color: red;
+			}
+
+			input[type='text'] {
+				resize: none;
+				width: 100%;
+				height: 2em;
+				background-color: transparent;
+				background-image: url('/assets/textarea.svg');
+				background-repeat: repeat;
+				background-size: 2em;
+				border: 0 none;
+				margin-top: -0.5em;
+				padding: 0 0.25em;
+				font-family: 'homemade apple', script;
+				font-size: 1em;
+				line-height: 2em;
+				color: #26f;
+				text-align: center;
+				overflow: hidden;
+				display: block;
+				box-sizing: border-box;
 			}
 
 			textarea {
@@ -874,8 +919,8 @@
 <script>
 import axios from 'axios';
 
-const baseURL = process.env.NODE_ENV === 'development' ? '//localhost:3000/guests/' : 'guests/';
-//  process.env.NODE_ENV === 'development' ? 'https://jennandsteve.ca/guests/' : 'guests/'
+const baseURL = process.env.NODE_ENV == 'development' ? '//localhost:3000/guests/' : 'guests/';
+//  process.env.NODE_ENV == 'development' ? 'https://jennandsteve.ca/guests/' : 'guests/'
 
 export default {
 	data() {
