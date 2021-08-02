@@ -78,15 +78,16 @@
 				<img draggable="false" class="img img-small img-flourish" src="/assets/flourish-1.jpg" />
 				<div class="body-text">
 					<h4>Greetings {{ guest.firstName }}!</h4>
-					<p>Do you accept your invitation?</p>
+					<p>Do you accept our invitation?</p>
 					<div class="input-row">
-						<input type="radio" name="accepts" value="veg" id="accepts-yes" v-model="guest.accepts" ref="accepts" />
+						<input type="radio" name="accepts" value="yes" id="accepts-yes" v-model="guest.accepts" ref="accepts" />
 						<label for="accepts-yes">Yes</label>
-						<input type="radio" name="accepts" value="beef" id="accepts-no" v-model="guest.accepts" ref="accepts" />
+						<input type="radio" name="accepts" value="no" id="accepts-no" v-model="guest.accepts" ref="accepts" />
 						<label for="accepts-no">No</label>
 					</div>
 				</div>
-				<button class="page-turn" v-on:click="next('guest-and-children')">
+				<img draggable="false" class="img img-small img-flourish" src="/assets/flourish-2.jpg" />
+				<button class="page-turn" v-on:click="spreadWelcomeNext()">
 					<img draggable="false" src="/assets/page-turn.svg" />
 				</button>
 				<div class="page-turn-tip" v-on:click="next('guest-and-children')">Turn the page to continue.</div>
@@ -996,6 +997,14 @@ export default {
 		this.lookupGuest();
 	},
 	methods: {
+		spreadWelcomeNext() {
+			if (this.guest.accepts == 'no') {
+				this.step = 12;
+			}
+			if (this.guest.accepts == 'yes') {
+				this.step = 2;
+			}
+		},
 		prev() {
 			this.step--;
 		},
