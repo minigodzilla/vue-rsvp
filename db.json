@@ -1,31 +1,41 @@
 {
   "guests": [
     {
-      "id": "1",
-      "email": "wendy@hotmail.com",
-      "guest1FirstName": "Wendy",
-      "guest1LastName": "Young",
-      "guest1Meal": "",
-      "guest1DietaryNotes": "",
-      "guest1AlcoholPref": ""
+      "id": "a1b2",
+      "email": "stevediabo@hotmail.com",
+      "accepts": "",
+      "firstName": "Steve",
+      "lastName": "Diabo",
+      "meal": "",
+      "dietaryNotes": "",
+      "alcoholPref": "",
+      "guestFirstName": "",
+      "guestLastName": "",
+      "guestMeal": "",
+      "guestDietaryNotes": "",
+      "guestAlcoholPref": "",
+      "childFirstName": "",
+      "childLastName": "",
+      "childMeal": "",
+      "childDietaryNotes": ""
     },
     {
-      "id": "2",
-      "email": "mm.diabo@gmail.com",
-      "guest1FirstName": "Margaret",
-      "guest1LastName": "Diabo",
+      "id": "c3d4",
+      "email": "jy.jenn@gmail.com",
+      "firstName": "Jenn",
+      "lastName": "Young",
       "guest1Meal": "",
-      "guest1DietaryNotes": "Lactose intolerant",
-      "guest1AlcoholPref": ""
-    },
-    {
-      "id": "3",
-      "email": "samgorkav@gmail.com",
-      "guest1FirstName": "Sam",
-      "guest1LastName": "Kavanagh",
-      "guest1Meal": "beef",
-      "guest1DietaryNotes": "No tomatoes",
-      "guest1AlcoholPref": "wine"
+      "dietaryNotes": "",
+      "alcoholPref": "",
+      "guestFirstName": "",
+      "guestLastName": "",
+      "guestMeal": "",
+      "guestDietaryNotes": "",
+      "guestAlcoholPref": "",
+      "childFirstName": "",
+      "childLastName": "",
+      "childMeal": "",
+      "childDietaryNotes": ""
     }
-  ]
+ ]
 }
